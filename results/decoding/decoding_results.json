@@ -1,0 +1,487 @@
+{
+  "metadata": {
+    "model_name": "Qwen/Qwen2.5-1.5B-Instruct",
+    "device": "mps",
+    "precision": "torch.bfloat16",
+    "max_new_tokens": 150
+  },
+  "deployment_analysis": "For an enterprise IT Helpdesk & Incident Resolution Assistant (V5), the optimal production strategy is Greedy Decoding or conservative Temperature Scaling (T=0.2). IT incident triage requires deterministic, verifiable commands (e.g., `mount -t ntfs-3g`, `iostat -xz 1 5`, `chmod 400`) where consistency and factual accuracy take absolute precedence over linguistic novelty. In our benchmark, Greedy Decoding delivered the lowest latency and highest throughput without sampling variance, eliminating hallucinated CLI flags. In contrast, Beam Search introduced a ~3.2x latency penalty unsuitable for real-time SLA response, while high temperatures (T=1.0) occasionally generated non-existent subcommands and disorganized parameter recommendations.",
+  "results": [
+    {
+      "prompt_id": "prompt_1",
+      "category": "linux_storage",
+      "prompt": "How do I troubleshoot an Ubuntu server that cannot mount an NTFS drive?",
+      "strategy_id": "greedy",
+      "strategy_name": "Greedy Decoding",
+      "kwargs": {
+        "do_sample": false,
+        "num_beams": 1
+      },
+      "generation_time_sec": 5.534,
+      "generated_tokens": 150,
+      "tokens_per_second": 27.1,
+      "generated_text": "To troubleshoot a problem with mounting an NTFS drive on an Ubuntu server, you can follow these steps:\n\n1. **Check the Filesystem Type**: First, verify if the filesystem type of the NTFS drive is indeed NTFS by using `lsblk` or `fdisk -l`. For example:\n   ```bash\n   lsblk -f /dev/sdX\n   ```\n   Or for `/dev/nvme0n1p2` (assuming it's an NVMe drive):\n   ```bash\n   fdisk -l /dev/nvme0n1p2\n   ```\n\n2. **Mount the Drive Manually**: Try to manually mount the drive to see if there are any errors during the"
+    },
+    {
+      "prompt_id": "prompt_1",
+      "category": "linux_storage",
+      "prompt": "How do I troubleshoot an Ubuntu server that cannot mount an NTFS drive?",
+      "strategy_id": "beam_search",
+      "strategy_name": "Beam Search (k=4)",
+      "kwargs": {
+        "do_sample": false,
+        "num_beams": 4,
+        "early_stopping": true
+      },
+      "generation_time_sec": 14.808,
+      "generated_tokens": 150,
+      "tokens_per_second": 10.13,
+      "generated_text": "To troubleshoot an Ubuntu server that cannot mount an NTFS drive, follow these steps:\n\n  1. Check the permissions of the NTFS drive: Make sure that the user account under which the Ubuntu server is running has the necessary permissions to access the NTFS drive. You can check the permissions using the `ls -l` command.\n  2. Check the mount options: Make sure that the mount options for the NTFS drive are correct. You can check the mount options using the `mount` command with the `-o` option.\n  3. Check the file system: Make sure that the file system on the NTFS drive is healthy. You can check the file system using the `fsck` command."
+    },
+    {
+      "prompt_id": "prompt_1",
+      "category": "linux_storage",
+      "prompt": "How do I troubleshoot an Ubuntu server that cannot mount an NTFS drive?",
+      "strategy_id": "top_k",
+      "strategy_name": "Top-K Sampling (k=50)",
+      "kwargs": {
+        "do_sample": true,
+        "top_k": 50,
+        "temperature": 1.0
+      },
+      "generation_time_sec": 9.358,
+      "generated_tokens": 150,
+      "tokens_per_second": 16.03,
+      "generated_text": "When trying to mount a Windows network drive, the server fails with error 53 and says it is unable to connect. This happens even if there are no errors reported by the host OS.\nThe error code 53 typically indicates that the file system has not been properly initialized or mounted correctly. Here's how you can troubleshoot your Ubuntu server:\n\n1. **Check for Mount Point Configuration**:\n   Ensure that the directory where the NTFS volume should be mounted exists in `/etc/fstab`. The format of this line in `fstab` should look like this:\n   ```\n   ntfs-3g /mnt/ntfs_volumes /windows_partition vfat defaults,noexec,nosuid,loop 0 0"
+    },
+    {
+      "prompt_id": "prompt_1",
+      "category": "linux_storage",
+      "prompt": "How do I troubleshoot an Ubuntu server that cannot mount an NTFS drive?",
+      "strategy_id": "top_p",
+      "strategy_name": "Top-P Nucleus (p=0.9)",
+      "kwargs": {
+        "do_sample": true,
+        "top_p": 0.9,
+        "temperature": 1.0
+      },
+      "generation_time_sec": 8.828,
+      "generated_tokens": 150,
+      "tokens_per_second": 16.99,
+      "generated_text": "When trying to mount a Windows network drive, the server fails with `mount: can't copy /proc/mounts`. This also occurs for other attempts of mounting an NTFS share.\n\nI am not sure what permissions are missing. There are no issues connecting remotely via ssh (I tried using Putty and Cyberduck). Other files work without any issue.\n\nAny help will be greatly appreciated!\n\n---\n\n**Update:** After following @user3190's suggestion below, I ran:\n\n```\nsudo apt install ntfs-3g\nntpd -s\n\n``` \n\nHowever, this results in \"no response\" from the service, as indicated by \"service ntpd status\". It seems like it is failing at some point after installing"
+    },
+    {
+      "prompt_id": "prompt_1",
+      "category": "linux_storage",
+      "prompt": "How do I troubleshoot an Ubuntu server that cannot mount an NTFS drive?",
+      "strategy_id": "temp_0_2",
+      "strategy_name": "Temperature Scaling (T=0.2)",
+      "kwargs": {
+        "do_sample": true,
+        "temperature": 0.2,
+        "top_p": 1.0
+      },
+      "generation_time_sec": 8.802,
+      "generated_tokens": 150,
+      "tokens_per_second": 17.04,
+      "generated_text": "When trying to mount a Windows NTFS drive on my Ubuntu 16.04 server, the system gives me this error:\n\n```\nmount: /dev/sdb2 is already mounted or read-only\n```\n\nI've tried several solutions suggested online but none have worked so far.\n\nHere are some steps I've taken:\n- Checked for any existing mounts using `sudo mount | grep ntfs`.\n- Tried different combinations of options like `-o rw`, `-o remount`, and `-o loop` in the `mount` command.\n- Ensured there's no other software interfering with the drive (e.g., by checking `/var/log/syslog`).\n- Attempted mounting the drive as root (`sudo mount -t ntfs"
+    },
+    {
+      "prompt_id": "prompt_1",
+      "category": "linux_storage",
+      "prompt": "How do I troubleshoot an Ubuntu server that cannot mount an NTFS drive?",
+      "strategy_id": "temp_0_7",
+      "strategy_name": "Temperature Scaling (T=0.7)",
+      "kwargs": {
+        "do_sample": true,
+        "temperature": 0.7,
+        "top_p": 1.0
+      },
+      "generation_time_sec": 8.663,
+      "generated_tokens": 150,
+      "tokens_per_second": 17.32,
+      "generated_text": "When trying to mount a Windows network drive, the system fails with `mount: can't find /dev/sdb1`. This indicates that the filesystem is not recognized by Linux.\n\n**Steps taken so far:**\n\n- The NTFS format was converted to ext4 using `ntfs-3g`.\n- The device file `/dev/sdb` exists and shows up via `lsblk`.\n\n**Additional information:**\n\n```bash\n$ sudo blkid\n/dev/sda1: UUID=\"9e20d78f-b6a3-4b9f-a855-fc64e5902964\" TYPE=\"ext4\"\n```\n\nCan you help me identify or fix the problem?"
+    },
+    {
+      "prompt_id": "prompt_1",
+      "category": "linux_storage",
+      "prompt": "How do I troubleshoot an Ubuntu server that cannot mount an NTFS drive?",
+      "strategy_id": "temp_1_0",
+      "strategy_name": "Temperature Scaling (T=1.0)",
+      "kwargs": {
+        "do_sample": true,
+        "temperature": 1.0,
+        "top_p": 1.0
+      },
+      "generation_time_sec": 12.397,
+      "generated_tokens": 150,
+      "tokens_per_second": 12.1,
+      "generated_text": "When trying to mount a Windows network drive, the server fails with `mount.ntfs-3g: unable to execute /sbin/mount.ntfs-3g` and displays \"Failed to read superblock\" or other similar errors in the log file. What could be causing this issue?\nTroubleshooting issues related to mounting files from an NTFS partition on a Linux (like Ubuntu) system requires checking various settings and configurations.\nFirstly, ensure that the kernel has been compiled with support for `blkid` by using the following command in a terminal:\n```\ncat /proc/filesystems | grep -i io\n```\n\nIf it doesn't return anything, install the `blockdev-tools`, `ntfs-3g-utils`,"
+    },
+    {
+      "prompt_id": "prompt_2",
+      "category": "linux_performance",
+      "prompt": "How do I investigate high disk I/O and CPU usage on a Linux production server?",
+      "strategy_id": "greedy",
+      "strategy_name": "Greedy Decoding",
+      "kwargs": {
+        "do_sample": false,
+        "num_beams": 1
+      },
+      "generation_time_sec": 9.593,
+      "generated_tokens": 150,
+      "tokens_per_second": 15.64,
+      "generated_text": "To investigate high disk I/O and CPU usage on a Linux production server, you can follow these steps:\n\n1. **Check Disk I/O Statistics:**\n   Use the `iostat` command to monitor disk I/O performance.\n   ```bash\n   iostat -x 1\n   ```\n   This will provide detailed statistics about disk activity over one interval.\n\n2. **Check CPU Usage:**\n   Use the `top`, `htop`, or `vmstat` commands to check CPU usage.\n   ```bash\n   top\n   htop\n   vmstat 1\n   ```\n\n3. **Analyze System Load:**\n   Check system load using `uptime` or `systemd-analyze`.\n   ```"
+    },
+    {
+      "prompt_id": "prompt_2",
+      "category": "linux_performance",
+      "prompt": "How do I investigate high disk I/O and CPU usage on a Linux production server?",
+      "strategy_id": "beam_search",
+      "strategy_name": "Beam Search (k=4)",
+      "kwargs": {
+        "do_sample": false,
+        "num_beams": 4,
+        "early_stopping": true
+      },
+      "generation_time_sec": 12.551,
+      "generated_tokens": 150,
+      "tokens_per_second": 11.95,
+      "generated_text": "To investigate high disk I/O and CPU usage on a Linux production server, you can follow these steps:\n\n1. **Check Disk I/O Statistics:**\n   Use the `iostat` command to monitor disk I/O performance. This command provides detailed statistics on disk I/O operations.\n\n   ```bash\n   iostat -x 1\n   ```\n\n   - `-x` option shows detailed statistics.\n   - `1` option runs the command once and then exits.\n\n2. **Check CPU Usage:**\n   Use the `top` or `htop` command to monitor CPU usage.\n\n   ```bash\n   top\n   ```\n\n   or\n\n   ```bash\n   htop\n   ```\n\n   These commands"
+    },
+    {
+      "prompt_id": "prompt_2",
+      "category": "linux_performance",
+      "prompt": "How do I investigate high disk I/O and CPU usage on a Linux production server?",
+      "strategy_id": "top_k",
+      "strategy_name": "Top-K Sampling (k=50)",
+      "kwargs": {
+        "do_sample": true,
+        "top_k": 50,
+        "temperature": 1.0
+      },
+      "generation_time_sec": 8.755,
+      "generated_tokens": 150,
+      "tokens_per_second": 17.13,
+      "generated_text": "When looking at top or iostat, the server is very responsive for short periods but then becomes unresponsive when doing lots of I/O. Is this due to lack of memory?\n\n```\nroot@server:~# free\n           total       used       free     shared    buffers     cached\nMem:          3895        247      3648         10        200       1327\n-/+ buffers/cache:       1372      2523\nSwap:             0          0          0\n\nroot@server:~# dstat -n | grep \"total\"\ntotal               time                   io-r/s              io-w"
+    },
+    {
+      "prompt_id": "prompt_2",
+      "category": "linux_performance",
+      "prompt": "How do I investigate high disk I/O and CPU usage on a Linux production server?",
+      "strategy_id": "top_p",
+      "strategy_name": "Top-P Nucleus (p=0.9)",
+      "kwargs": {
+        "do_sample": true,
+        "top_p": 0.9,
+        "temperature": 1.0
+      },
+      "generation_time_sec": 9.223,
+      "generated_tokens": 150,
+      "tokens_per_second": 16.26,
+      "generated_text": "When looking at logs from an application or other service that is running, there can be lots of different metrics to look at. Which ones are important when trying to find out why the performance is poor?\nI have read about checking CPU load in /proc/stat but this does not tell me much because it seems to include the time used by all services including the kernel.\nAnother method I could try would be to check the iowait column in my system top process info as it looks like this column shows how many seconds each user has spent waiting for disk input/output operations to complete. This sounds promising since I am trying to diagnose a situation where a certain service appears to have been killed off after around 45 mins, leaving the rest of the machine"
+    },
+    {
+      "prompt_id": "prompt_2",
+      "category": "linux_performance",
+      "prompt": "How do I investigate high disk I/O and CPU usage on a Linux production server?",
+      "strategy_id": "temp_0_2",
+      "strategy_name": "Temperature Scaling (T=0.2)",
+      "kwargs": {
+        "do_sample": true,
+        "temperature": 0.2,
+        "top_p": 1.0
+      },
+      "generation_time_sec": 8.89,
+      "generated_tokens": 150,
+      "tokens_per_second": 16.87,
+      "generated_text": "To identify the cause of high disk I/O and CPU usage, you can use various tools such as `iostat`, `top`, `vmstat`, and `df`. Here's how to use them:\n\n1. **Check Disk I/O:**\n   - Use `iostat` to monitor disk activity:\n     ```bash\n     iostat -x 5\n     ```\n     This command shows detailed information about disk activity over the last five seconds.\n\n2. **Monitor CPU Usage:**\n   - Use `top` or `htop` to see real-time CPU usage:\n     ```bash\n     top\n     ```\n     Or if you prefer Htop:\n     ```bash\n     htop\n     ```\n\n3"
+    },
+    {
+      "prompt_id": "prompt_2",
+      "category": "linux_performance",
+      "prompt": "How do I investigate high disk I/O and CPU usage on a Linux production server?",
+      "strategy_id": "temp_0_7",
+      "strategy_name": "Temperature Scaling (T=0.7)",
+      "kwargs": {
+        "do_sample": true,
+        "temperature": 0.7,
+        "top_p": 1.0
+      },
+      "generation_time_sec": 8.624,
+      "generated_tokens": 150,
+      "tokens_per_second": 17.39,
+      "generated_text": "When looking at logs, it seems the system is using lots of resources.\n\nTo be more specific:\n\n1. 2GB RAM, with around 70% free\n2. 8GB swap space (with no free)\n3. ~50% CPU used by all processes\n4. ~600MB per second read from disk\n\nThe disks also seem to have some fragmentation issues as well, but I'm not sure if that's relevant.\n\nI don't have any idea how to start investigating this issue. Can anyone point me towards where I should look?\n\nHere are my thoughts so far:\n\n- Check what processes are taking up most memory:\n`top -a | grep Mem`\n- Check what processes use the most resources"
+    },
+    {
+      "prompt_id": "prompt_2",
+      "category": "linux_performance",
+      "prompt": "How do I investigate high disk I/O and CPU usage on a Linux production server?",
+      "strategy_id": "temp_1_0",
+      "strategy_name": "Temperature Scaling (T=1.0)",
+      "kwargs": {
+        "do_sample": true,
+        "temperature": 1.0,
+        "top_p": 1.0
+      },
+      "generation_time_sec": 8.835,
+      "generated_tokens": 150,
+      "tokens_per_second": 16.98,
+      "generated_text": "When looking at logs from an application or other service that is running, there doesn\u2019t seem to be a straightforward way to correlate the I/O request size with what\u2019s being sent.\n\nFor example:\n\n```\n2015-May-16  : 34 KB of data was requested by <http://example.com>. The response took **24 sec**. (request rate: 8 requests/s)\n\n``` There should also likely be some correlation between CPU usage and I/O performance.\nIs anyone aware of how one might go about investigating this issue?\n\nOne approach is to use `iostat` which does provide metrics but can show a different set than you'd like:\n \n```bash\n(iostat -dx 1 |"
+    },
+    {
+      "prompt_id": "prompt_3",
+      "category": "cloud_networking",
+      "prompt": "How do I troubleshoot AWS EC2 instance connectivity and SSH access issues?",
+      "strategy_id": "greedy",
+      "strategy_name": "Greedy Decoding",
+      "kwargs": {
+        "do_sample": false,
+        "num_beams": 1
+      },
+      "generation_time_sec": 8.908,
+      "generated_tokens": 150,
+      "tokens_per_second": 16.84,
+      "generated_text": "Troubleshooting AWS EC2 instance connectivity and SSH access issues involves several steps. Here are some common methods to diagnose and resolve such problems:\n\n### 1. **Check Instance Status**\n   - Ensure your EC2 instance is running by checking the status in the Amazon Management Console or using the `aws ec2 describe-instances` command.\n     ```bash\n     aws ec2 describe-instances --instance-ids <INSTANCE_ID>\n     ```\n\n### 2. **Verify Network Connectivity**\n   - Use `ping` or `traceroute` to check if you can reach the internet from your EC2 instance.\n     ```bash\n     ping example.com\n     traceroute example.com\n     ```\n   - If you cannot reach the internet,"
+    },
+    {
+      "prompt_id": "prompt_3",
+      "category": "cloud_networking",
+      "prompt": "How do I troubleshoot AWS EC2 instance connectivity and SSH access issues?",
+      "strategy_id": "beam_search",
+      "strategy_name": "Beam Search (k=4)",
+      "kwargs": {
+        "do_sample": false,
+        "num_beams": 4,
+        "early_stopping": true
+      },
+      "generation_time_sec": 14.152,
+      "generated_tokens": 150,
+      "tokens_per_second": 10.6,
+      "generated_text": "Troubleshooting AWS EC2 instance connectivity and SSH access issues involves several steps to diagnose and resolve the problem. Here\u2019s a step-by-step guide to help you troubleshoot these issues:\n\n### 1. Verify Instance Status\nFirst, ensure that your EC2 instance is up and running. You can check the status of your instance using the AWS Management Console or the AWS CLI.\n\n- **Using the AWS Management Console:**\n  1. Go to the AWS Management Console.\n  2. Navigate to the EC2 dashboard.\n  3. Find your instance in the list of instances.\n  4. Click on the instance to view its details.\n\n- **Using the AWS CLI:**\n  ```bash\n  aws ec2 describe"
+    },
+    {
+      "prompt_id": "prompt_3",
+      "category": "cloud_networking",
+      "prompt": "How do I troubleshoot AWS EC2 instance connectivity and SSH access issues?",
+      "strategy_id": "top_k",
+      "strategy_name": "Top-K Sampling (k=50)",
+      "kwargs": {
+        "do_sample": true,
+        "top_k": 50,
+        "temperature": 1.0
+      },
+      "generation_time_sec": 11.949,
+      "generated_tokens": 150,
+      "tokens_per_second": 12.55,
+      "generated_text": "Troubleshooting Amazon Elastic Compute Cloud (EC2) instances for connectivity and SSH access involves several steps. Here are the key areas to investigate:\n\n### 1. **Check Instance Status**\n   - Ensure your EC2 instance is running by checking its status.\n     ```bash\n     aws ec2 describe-instances --instance-ids <INSTANCE_ID>\n     ```\n   - If the instance is not running, start it using:\n     ```bash\n     sudo systemctl start ec2-api-svc.service && sudo systemctl restart sshd\n     ```\n\n### 2. **Network Connectivity**\n   - Verify that your network settings on the EC2 instance allow traffic between the host and the target service or external IP addresses.\n\n### 3. **Fire"
+    },
+    {
+      "prompt_id": "prompt_3",
+      "category": "cloud_networking",
+      "prompt": "How do I troubleshoot AWS EC2 instance connectivity and SSH access issues?",
+      "strategy_id": "top_p",
+      "strategy_name": "Top-P Nucleus (p=0.9)",
+      "kwargs": {
+        "do_sample": true,
+        "top_p": 0.9,
+        "temperature": 1.0
+      },
+      "generation_time_sec": 6.962,
+      "generated_tokens": 150,
+      "tokens_per_second": 21.55,
+      "generated_text": "How can I verify network latency between the EC2 instance and other resources like RDS, S3, etc.? Are there any specific scripts or tools that can help me identify such problems?\n\nTroubleshooting EC2 instance connectivity and SSH access issues involves a few key steps:\n\n1. **Check DNS Resolution**: Ensure that your EC2 instances are correctly configured to resolve public DNS names (like `www.example.com`). You can use the command line tool `ping` from within an EC2 instance to check if it resolves properly.\n\n   ```bash\n   ping www.example.com\n   ```\n\n2. **Verify Network Connectivity**: Use commands like `curl` or `ssh` with `-v` for verbose output to see the status of connections."
+    },
+    {
+      "prompt_id": "prompt_3",
+      "category": "cloud_networking",
+      "prompt": "How do I troubleshoot AWS EC2 instance connectivity and SSH access issues?",
+      "strategy_id": "temp_0_2",
+      "strategy_name": "Temperature Scaling (T=0.2)",
+      "kwargs": {
+        "do_sample": true,
+        "temperature": 0.2,
+        "top_p": 1.0
+      },
+      "generation_time_sec": 7.238,
+      "generated_tokens": 150,
+      "tokens_per_second": 20.73,
+      "generated_text": "Troubleshooting AWS EC2 instance connectivity and SSH access issues can be approached systematically to identify the root cause. Here are some steps you can follow:\n\n1. **Check Instance Status:**\n   - Ensure that your EC2 instance is in a running state.\n   - Verify if there are any recent changes or updates applied to your instance.\n\n2. **Ping Test:**\n   - Use `ping` command to check if the instance can reach external networks:\n     ```bash\n     ping <external_ip_or_domain>\n     ```\n   - If it fails, try pinging internal IPs of other instances within the same VPC.\n\n3. **SSH Connectivity:**\n   - Try connecting via SSH using the public IP address:\n     ```bash"
+    },
+    {
+      "prompt_id": "prompt_3",
+      "category": "cloud_networking",
+      "prompt": "How do I troubleshoot AWS EC2 instance connectivity and SSH access issues?",
+      "strategy_id": "temp_0_7",
+      "strategy_name": "Temperature Scaling (T=0.7)",
+      "kwargs": {
+        "do_sample": true,
+        "temperature": 0.7,
+        "top_p": 1.0
+      },
+      "generation_time_sec": 6.851,
+      "generated_tokens": 150,
+      "tokens_per_second": 21.9,
+      "generated_text": "When troubleshooting AWS EC2 (Elastic Compute Cloud) instance connectivity and SSH access, follow these steps:\n\n### 1. Verify Network Connectivity\n   - **Check your internet connection:** Ensure that your local network is connected to the internet.\n   - **Ping test:** Use `ping` or similar command from your terminal to check if you can reach an external DNS server via your public IP address.\n\n```bash\nping google.com\n```\n\n- **Test with a different domain name:** If the ping works but doesn't resolve, it could be a DNS issue within your organization's DNS servers.\n\n### 2. Check VPC Configuration\n   - **VPC Endpoint:** Ensure that there are no misconfigurations in the VPC setup,"
+    },
+    {
+      "prompt_id": "prompt_3",
+      "category": "cloud_networking",
+      "prompt": "How do I troubleshoot AWS EC2 instance connectivity and SSH access issues?",
+      "strategy_id": "temp_1_0",
+      "strategy_name": "Temperature Scaling (T=1.0)",
+      "kwargs": {
+        "do_sample": true,
+        "temperature": 1.0,
+        "top_p": 1.0
+      },
+      "generation_time_sec": 6.764,
+      "generated_tokens": 150,
+      "tokens_per_second": 22.18,
+      "generated_text": "When troubleshooting your Amazon Elastic Compute Cloud (EC2) infrastructure, you may encounter a variety of problems that require you to diagnose and fix them to ensure smooth operations. Here are some tips on how to troubleshoot EC2 connectivity and SSH access issues:\n- Use the AWS Management Console or AWS CLI to gather information about the issue.\n- Try pinging the IP address of the EC2 instance using command-line tools like ping or tracert.\n- Check for any firewall rules that might be blocking SSH connections.\n- Verify that the hostname is correct in both your source code and your client code.\n- Ensure that DNS resolution is working correctly by performing a lookup on an alternate domain name if necessary.\n- Attempt to connect via another method - e.g.,"
+    }
+  ],
+  "matrix": [
+    {
+      "prompt_id": "prompt_1",
+      "category": "linux_storage",
+      "prompt": "How do I troubleshoot an Ubuntu server that cannot mount an NTFS drive?",
+      "greedy": {
+        "tok_per_sec": 27.1,
+        "time_sec": 5.534,
+        "tokens": 150,
+        "text_snippet": "To troubleshoot a problem with mounting an NTFS drive on an Ubuntu server, you can follow these steps:\n\n1. **Check the F..."
+      },
+      "beam_search": {
+        "tok_per_sec": 10.13,
+        "time_sec": 14.808,
+        "tokens": 150,
+        "text_snippet": "To troubleshoot an Ubuntu server that cannot mount an NTFS drive, follow these steps:\n\n  1. Check the permissions of the..."
+      },
+      "top_k": {
+        "tok_per_sec": 16.03,
+        "time_sec": 9.358,
+        "tokens": 150,
+        "text_snippet": "When trying to mount a Windows network drive, the server fails with error 53 and says it is unable to connect. This happ..."
+      },
+      "top_p": {
+        "tok_per_sec": 16.99,
+        "time_sec": 8.828,
+        "tokens": 150,
+        "text_snippet": "When trying to mount a Windows network drive, the server fails with `mount: can't copy /proc/mounts`. This also occurs f..."
+      },
+      "temp_0_2": {
+        "tok_per_sec": 17.04,
+        "time_sec": 8.802,
+        "tokens": 150,
+        "text_snippet": "When trying to mount a Windows NTFS drive on my Ubuntu 16.04 server, the system gives me this error:\n\n```\nmount: /dev/sd..."
+      },
+      "temp_0_7": {
+        "tok_per_sec": 17.32,
+        "time_sec": 8.663,
+        "tokens": 150,
+        "text_snippet": "When trying to mount a Windows network drive, the system fails with `mount: can't find /dev/sdb1`. This indicates that t..."
+      },
+      "temp_1_0": {
+        "tok_per_sec": 12.1,
+        "time_sec": 12.397,
+        "tokens": 150,
+        "text_snippet": "When trying to mount a Windows network drive, the server fails with `mount.ntfs-3g: unable to execute /sbin/mount.ntfs-3..."
+      }
+    },
+    {
+      "prompt_id": "prompt_2",
+      "category": "linux_performance",
+      "prompt": "How do I investigate high disk I/O and CPU usage on a Linux production server?",
+      "greedy": {
+        "tok_per_sec": 15.64,
+        "time_sec": 9.593,
+        "tokens": 150,
+        "text_snippet": "To investigate high disk I/O and CPU usage on a Linux production server, you can follow these steps:\n\n1. **Check Disk I/..."
+      },
+      "beam_search": {
+        "tok_per_sec": 11.95,
+        "time_sec": 12.551,
+        "tokens": 150,
+        "text_snippet": "To investigate high disk I/O and CPU usage on a Linux production server, you can follow these steps:\n\n1. **Check Disk I/..."
+      },
+      "top_k": {
+        "tok_per_sec": 17.13,
+        "time_sec": 8.755,
+        "tokens": 150,
+        "text_snippet": "When looking at top or iostat, the server is very responsive for short periods but then becomes unresponsive when doing ..."
+      },
+      "top_p": {
+        "tok_per_sec": 16.26,
+        "time_sec": 9.223,
+        "tokens": 150,
+        "text_snippet": "When looking at logs from an application or other service that is running, there can be lots of different metrics to loo..."
+      },
+      "temp_0_2": {
+        "tok_per_sec": 16.87,
+        "time_sec": 8.89,
+        "tokens": 150,
+        "text_snippet": "To identify the cause of high disk I/O and CPU usage, you can use various tools such as `iostat`, `top`, `vmstat`, and `..."
+      },
+      "temp_0_7": {
+        "tok_per_sec": 17.39,
+        "time_sec": 8.624,
+        "tokens": 150,
+        "text_snippet": "When looking at logs, it seems the system is using lots of resources.\n\nTo be more specific:\n\n1. 2GB RAM, with around 70%..."
+      },
+      "temp_1_0": {
+        "tok_per_sec": 16.98,
+        "time_sec": 8.835,
+        "tokens": 150,
+        "text_snippet": "When looking at logs from an application or other service that is running, there doesn\u2019t seem to be a straightforward wa..."
+      }
+    },
+    {
+      "prompt_id": "prompt_3",
+      "category": "cloud_networking",
+      "prompt": "How do I troubleshoot AWS EC2 instance connectivity and SSH access issues?",
+      "greedy": {
+        "tok_per_sec": 16.84,
+        "time_sec": 8.908,
+        "tokens": 150,
+        "text_snippet": "Troubleshooting AWS EC2 instance connectivity and SSH access issues involves several steps. Here are some common methods..."
+      },
+      "beam_search": {
+        "tok_per_sec": 10.6,
+        "time_sec": 14.152,
+        "tokens": 150,
+        "text_snippet": "Troubleshooting AWS EC2 instance connectivity and SSH access issues involves several steps to diagnose and resolve the p..."
+      },
+      "top_k": {
+        "tok_per_sec": 12.55,
+        "time_sec": 11.949,
+        "tokens": 150,
+        "text_snippet": "Troubleshooting Amazon Elastic Compute Cloud (EC2) instances for connectivity and SSH access involves several steps. Her..."
+      },
+      "top_p": {
+        "tok_per_sec": 21.55,
+        "time_sec": 6.962,
+        "tokens": 150,
+        "text_snippet": "How can I verify network latency between the EC2 instance and other resources like RDS, S3, etc.? Are there any specific..."
+      },
+      "temp_0_2": {
+        "tok_per_sec": 20.73,
+        "time_sec": 7.238,
+        "tokens": 150,
+        "text_snippet": "Troubleshooting AWS EC2 instance connectivity and SSH access issues can be approached systematically to identify the roo..."
+      },
+      "temp_0_7": {
+        "tok_per_sec": 21.9,
+        "time_sec": 6.851,
+        "tokens": 150,
+        "text_snippet": "When troubleshooting AWS EC2 (Elastic Compute Cloud) instance connectivity and SSH access, follow these steps:\n\n### 1. V..."
+      },
+      "temp_1_0": {
+        "tok_per_sec": 22.18,
+        "time_sec": 6.764,
+        "tokens": 150,
+        "text_snippet": "When troubleshooting your Amazon Elastic Compute Cloud (EC2) infrastructure, you may encounter a variety of problems tha..."
+      }
+    }
+  ]
+}

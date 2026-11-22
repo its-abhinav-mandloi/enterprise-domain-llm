@@ -1,0 +1,51 @@
+# ============================================================
+# Data Pipeline Configuration
+# Enterprise Domain LLM — Assignment 1B
+# ============================================================
+
+paths:
+  raw_pdfs: "data/raw_pdfs"
+  extracted_text: "data/extracted_text"
+  domain_corpus: "data/domain_corpus"
+  processed: "data/processed"
+  instruction_dataset: "data/processed/instruction_dataset.jsonl"
+  corpus_stats_json: "data/processed/corpus_stats.json"
+  corpus_stats_csv: "data/processed/corpus_stats.csv"
+
+extraction:
+  # Minimum characters per page to keep
+  min_page_chars: 100
+  # Strip headers/footers (line length heuristic)
+  strip_short_lines: true
+  short_line_threshold: 40    # chars; lines shorter than this are candidates for removal
+
+cleaning:
+  min_text_length: 100        # discard texts shorter than this
+  max_text_length: 100000     # discard suspiciously long texts
+  normalize_whitespace: true
+  remove_control_chars: true
+  strip_urls: false           # keep URLs — may be relevant technical content
+
+deduplication:
+  exact_hash_algo: "sha256"
+  near_dup_shingle_size: 5    # words per shingle
+  near_dup_jaccard_threshold: 0.8   # > this → near-duplicate
+
+language:
+  target_language: "en"
+  min_confidence: 0.8         # langdetect confidence threshold
+
+instruction_generation:
+  window_size: 3              # sentences per sliding window
+  stride: 2                   # stride of the window
+  max_pairs_per_doc: 50
+  min_response_length: 80     # chars
+  templates:
+    - "What does the following text explain? {context}"
+    - "Summarize the key technical steps described here: {context}"
+    - "Based on the following content, what problem is being solved? {context}"
+    - "Explain the concept described in this passage: {context}"
+    - "What are the main takeaways from this technical text? {context}"
+
+corpus:
+  tokenizer_for_stats: "gpt2"  # lightweight tokenizer for token count estimation

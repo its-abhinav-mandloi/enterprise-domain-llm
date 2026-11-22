@@ -1,0 +1,66 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.installed.cfg
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Secrets & Environment variables
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb~
+
+# Large raw files and caches
+data/raw_pdfs/*.pdf
+data/extracted_text/*.txt
+*.bin
+*.safetensors
+*.pt
+*.pth
+.cache/
+~/.cache/
+
+# Allow essential deliverables in data and results
+!data/domain_corpus/*.txt
+!data/*.jsonl
+!results/**/*.json
+!results/**/*.csv
+!results/**/*.png
+!models/lora_adapter/*
+!models/lora_adapter/adapter_model.safetensors
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs and temp
+*.log
+logs/
+*.tmp
+*.bak

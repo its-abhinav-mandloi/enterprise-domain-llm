@@ -1,0 +1,66 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "enterprise-domain-llm"
+version = "0.1.0"
+description = "Enterprise Domain LLM Fine-tuning and Evaluation — Assignment 1B"
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "MIT" }
+authors = [
+    { name = "Abhinav Mandloi", email = "abhinav.mandloi@example.com" }
+]
+keywords = ["llm", "fine-tuning", "qlora", "peft", "nlp", "enterprise"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+    "torch>=2.2.0",
+    "transformers>=4.40.0",
+    "datasets>=2.19.0",
+    "accelerate>=0.29.0",
+    "peft>=0.10.0",
+    "trl>=0.8.6",
+    "huggingface_hub>=0.22.2",
+    "tokenizers>=0.19.1",
+    "sentencepiece>=0.2.0",
+    "pymupdf>=1.24.0",
+    "langdetect>=1.0.9",
+    "scikit-learn>=1.4.2",
+    "matplotlib>=3.9.0",
+    "pandas>=2.2.2",
+    "numpy>=1.26.4",
+    "pyarrow>=16.0.0",
+    "jsonlines>=4.0.0",
+    "pyyaml>=6.0.1",
+    "psutil>=5.9.8",
+    "nbconvert>=7.16.4",
+    "jupyter>=1.0.0",
+    "ipykernel>=6.29.4",
+    "bitsandbytes>=0.43.0",
+]
+
+[project.optional-dependencies]
+dev = ["black", "ruff", "mypy", "pytest", "pytest-cov"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*"]
+
+[tool.black]
+line-length = 100
+target-version = ["py312"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+select = ["E", "W", "F", "I"]
+
+[tool.mypy]
+python_version = "3.12"
+ignore_missing_imports = true

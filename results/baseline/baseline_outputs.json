@@ -1,0 +1,47 @@
+{
+  "metadata": {
+    "model_identifier": "Qwen/Qwen2.5-1.5B-Instruct",
+    "parameter_count": 1543714304,
+    "parameter_count_formatted": "1.54B",
+    "num_decoder_layers": 28,
+    "hidden_size": 1536,
+    "vocab_size": 151936,
+    "tokenizer": "Qwen2Tokenizer",
+    "device": "mps",
+    "precision": "torch.bfloat16",
+    "generation_settings": {
+      "max_new_tokens": 150,
+      "do_sample": false,
+      "system_prompt": null
+    }
+  },
+  "baseline_runs": [
+    {
+      "id": "prompt_1",
+      "category": "linux_storage",
+      "prompt": "How do I troubleshoot an Ubuntu server that cannot mount an NTFS drive?",
+      "generated_text": "To troubleshoot a problem with mounting an NTFS drive on an Ubuntu server, you can follow these steps:\n\n1. **Check the Filesystem Type**: First, verify if the filesystem type of the NTFS drive is indeed NTFS by using `lsblk` or `fdisk -l`. For example:\n   ```bash\n   lsblk -f /dev/sdX\n   ```\n   Or for `/dev/nvme0n1p2` (assuming it's an NVMe drive):\n   ```bash\n   fdisk -l /dev/nvme0n1p2\n   ```\n\n2. **Mount the Drive Manually**: Try to manually mount the drive to see if there are any errors during the",
+      "generation_time_sec": 7.581,
+      "generated_tokens": 150,
+      "tokens_per_second": 19.79
+    },
+    {
+      "id": "prompt_2",
+      "category": "linux_performance",
+      "prompt": "How do I investigate high disk I/O and CPU usage on a Linux production server?",
+      "generated_text": "To investigate high disk I/O and CPU usage on a Linux production server, you can follow these steps:\n\n1. **Check Disk I/O Statistics:**\n   Use the `iostat` command to monitor disk I/O performance.\n   ```bash\n   iostat -x 1\n   ```\n   This will provide detailed statistics about disk activity over one interval.\n\n2. **Check CPU Usage:**\n   Use the `top`, `htop`, or `vmstat` commands to check CPU usage.\n   ```bash\n   top\n   htop\n   vmstat 1\n   ```\n\n3. **Analyze System Load:**\n   Check system load using `uptime` or `systemd-analyze`.\n   ```",
+      "generation_time_sec": 5.619,
+      "generated_tokens": 150,
+      "tokens_per_second": 26.69
+    },
+    {
+      "id": "prompt_3",
+      "category": "cloud_networking",
+      "prompt": "How do I troubleshoot AWS EC2 instance connectivity and SSH access issues?",
+      "generated_text": "Troubleshooting AWS EC2 instance connectivity and SSH access issues involves several steps. Here are some common methods to diagnose and resolve such problems:\n\n### 1. **Check Instance Status**\n   - Ensure your EC2 instance is running by checking the status in the Amazon Management Console or using the `aws ec2 describe-instances` command.\n     ```bash\n     aws ec2 describe-instances --instance-ids <INSTANCE_ID>\n     ```\n\n### 2. **Verify Network Connectivity**\n   - Use `ping` or `traceroute` to check if you can reach the internet from your EC2 instance.\n     ```bash\n     ping example.com\n     traceroute example.com\n     ```\n   - If you cannot reach the internet,",
+      "generation_time_sec": 5.635,
+      "generated_tokens": 150,
+      "tokens_per_second": 26.62
+    }
+  ]
+}

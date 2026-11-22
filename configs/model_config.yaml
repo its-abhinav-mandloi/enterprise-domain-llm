@@ -1,0 +1,63 @@
+# ============================================================
+# Model Configuration
+# Enterprise Domain LLM — Assignment 1B
+# ============================================================
+
+model:
+  base_model_name: "Qwen/Qwen2.5-1.5B-Instruct"
+  draft_model_name: "Qwen/Qwen2.5-0.5B-Instruct"
+  torch_dtype: "bfloat16"       # BF16 supported on Apple M4 MPS
+  device_map: "auto"
+  trust_remote_code: false
+  use_flash_attention: false     # Not supported on MPS
+
+generation:
+  max_new_tokens: 150
+  do_sample: false
+  temperature: 0.7
+  top_p: 0.9
+  top_k: 50
+  repetition_penalty: 1.1
+
+# Canonical domain-specific evaluation prompts (used in ALL experiments)
+evaluation_prompts:
+  - id: "prompt_1"
+    text: "How do I troubleshoot an Ubuntu server that cannot mount an NTFS drive?"
+    category: "linux_storage"
+  - id: "prompt_2"
+    text: "How do I investigate high disk I/O and CPU usage on a Linux production server?"
+    category: "linux_performance"
+  - id: "prompt_3"
+    text: "How do I troubleshoot AWS EC2 instance connectivity and SSH access issues?"
+    category: "cloud_networking"
+
+# 10 production benchmark domain prompts (for Part C Step 3)
+production_prompts:
+  - id: "p1"
+    text: "How do I troubleshoot an Ubuntu server that cannot mount an NTFS drive?"
+  - id: "p2"
+    text: "How do I investigate high disk I/O and CPU usage on a Linux production server?"
+  - id: "p3"
+    text: "How do I troubleshoot AWS EC2 instance connectivity and SSH access issues?"
+  - id: "p4"
+    text: "What steps should I follow when a systemd service enters a crash-loop state on Linux?"
+  - id: "p5"
+    text: "How do I resolve a corporate VPN client authentication failure on macOS or Linux?"
+  - id: "p6"
+    text: "How can I diagnose DNS resolution timeouts and DNS leak issues on a Linux server?"
+  - id: "p7"
+    text: "What commands are used to check and repair a corrupted ext4 or XFS filesystem?"
+  - id: "p8"
+    text: "How do I configure and verify Red Hat Enterprise Linux firewall rules using firewalld?"
+  - id: "p9"
+    text: "How do I troubleshoot high connection pooling exhaustion in PostgreSQL database server?"
+  - id: "p10"
+    text: "What is the procedure to expand an AWS EBS root volume without rebooting the instance?"
+
+hardware:
+  platform: "darwin_arm64"
+  device: "mps"       # Apple Silicon — use MPS when available, else CPU
+  cuda_available: false
+  mps_available: true
+  bf16_supported: true
+  fp16_on_mps: false

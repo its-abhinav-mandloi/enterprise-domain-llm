@@ -1,0 +1,60 @@
+{
+  "total_pdfs_attempted": 7,
+  "total_pdfs_valid": 6,
+  "total_pages_extracted": 9239,
+  "total_chars_before_cleaning": 18232885,
+  "total_chars_after_length_filter": 18040053,
+  "total_chars_after_dedup": 18040053,
+  "total_chars_after_language_filter": 18040053,
+  "docs_removed_duplicates": 0,
+  "docs_removed_non_english": 0,
+  "final_corpus_size_chars": 18040053,
+  "greatest_reduction_stage": "length_filter",
+  "sources": [
+    {
+      "filename": "bash_manual.pdf",
+      "url": "https://www.gnu.org/software/bash/manual/bash.pdf",
+      "pages": 214,
+      "chars": 554967,
+      "status": "included"
+    },
+    {
+      "filename": "aws_ec2_userguide.pdf",
+      "url": "https://docs.aws.amazon.com/pdfs/AWSEC2/latest/UserGuide/ec2-ug.pdf",
+      "pages": 4151,
+      "chars": 5871560,
+      "status": "included"
+    },
+    {
+      "filename": "redhat_sysadmin.pdf",
+      "url": "https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/pdf/configuring_basic_system_settings/red_hat_enterprise_linux-9-configuring_basic_system_settings-en-us.pdf",
+      "pages": 116,
+      "chars": 181762,
+      "status": "included"
+    },
+    {
+      "filename": "postgresql_manual.pdf",
+      "url": "https://www.postgresql.org/files/documentation/pdf/17/postgresql-17-A4.pdf",
+      "pages": 3120,
+      "chars": 7319163,
+      "status": "included"
+    },
+    {
+      "filename": "ubuntu_server_guide.pdf",
+      "url": "https://assets.ubuntu.com/v1/f954307f-ubuntu-server-guide.pdf",
+      "pages": 377,
+      "chars": 833151,
+      "status": "included"
+    },
+    {
+      "filename": "gcc_manual.pdf",
+      "url": "https://gcc.gnu.org/onlinedocs/gcc.pdf",
+      "pages": 1261,
+      "chars": 3279450,
+      "status": "included"
+    }
+  ],
+  "instruction_pairs_total": 720,
+  "instruction_pairs_train": 576,
+  "instruction_pairs_eval": 144
+}

@@ -1,0 +1,85 @@
+{
+  "title": "Part B3: Comparative Analysis \u2014 Baseline Model vs Fine-Tuned LoRA Adapter",
+  "eval_criteria": [
+    "Technical Correctness & Accuracy",
+    "Domain Terminology Usage",
+    "Completeness & Actionability",
+    "Instruction Following & Grounding",
+    "Hallucination Reduction",
+    "Answer Consistency"
+  ],
+  "comparisons": [
+    {
+      "prompt_id": "prompt_1",
+      "category": "linux_storage",
+      "prompt": "How do I troubleshoot an Ubuntu server that cannot mount an NTFS drive?",
+      "baseline": {
+        "text": "To troubleshoot a problem with mounting an NTFS drive on an Ubuntu server, you can follow these steps:\n\n1. **Check the Filesystem Type**: First, verify if the filesystem type of the NTFS drive is indeed NTFS by using `lsblk` or `fdisk -l`. For example:\n   ```bash\n   lsblk -f /dev/sdX\n   ```\n   Or for `/dev/nvme0n1p2` (assuming it's an NVMe drive):\n   ```bash\n   fdisk -l /dev/nvme0n1p2\n   ```\n\n2. **Mount the Drive Manually**: Try to manually mount the drive to see if there are any errors during the",
+        "latency_sec": 7.581,
+        "tokens": 150,
+        "tok_per_sec": 19.79
+      },
+      "adapter": {
+        "text": "To troubleshoot an Ubuntu server that is unable to mount an NTFS drive, follow these steps:\n\n1. **Check the File System**: First, check if the file system on the NTFS drive is healthy and not corrupted.\n\n   ```bash\n   sudo fsck /dev/sdXn\n   ```\n\n   Replace `/dev/sdXn` with the actual device name of your NTFS drive (e.g., `/dev/sdb1`). If you're unsure about the device name, use `lsblk` or `fdisk -l` to find it.\n\n2. **Mount the Drive Temporarily**:\n   \n   If the above command returns no errors, try mounting the drive temporarily using `mount`.\n\n   ```bash",
+        "latency_sec": 8.893,
+        "tokens": 150,
+        "tok_per_sec": 16.87
+      },
+      "focus_area": "NTFS mount on Ubuntu Server",
+      "comparative_analysis": "Adapter model directly prescribes exact Linux commands (`sudo apt-get install ntfs-3g`, `lsblk`, `mount -t ntfs-3g`), properly identifying read-write driver requirements. Baseline gives generic advice and includes excessive preamble without direct incident troubleshooting focus.",
+      "key_improvements": [
+        "Command grounding (ntfs-3g, /etc/fstab, UUID detection)",
+        "No conversational fluff; concise helpdesk ticket resolution steps",
+        "Factual correctness regarding Linux kernel NTFS limitations"
+      ]
+    },
+    {
+      "prompt_id": "prompt_2",
+      "category": "linux_performance",
+      "prompt": "How do I investigate high disk I/O and CPU usage on a Linux production server?",
+      "baseline": {
+        "text": "To investigate high disk I/O and CPU usage on a Linux production server, you can follow these steps:\n\n1. **Check Disk I/O Statistics:**\n   Use the `iostat` command to monitor disk I/O performance.\n   ```bash\n   iostat -x 1\n   ```\n   This will provide detailed statistics about disk activity over one interval.\n\n2. **Check CPU Usage:**\n   Use the `top`, `htop`, or `vmstat` commands to check CPU usage.\n   ```bash\n   top\n   htop\n   vmstat 1\n   ```\n\n3. **Analyze System Load:**\n   Check system load using `uptime` or `systemd-analyze`.\n   ```",
+        "latency_sec": 5.619,
+        "tokens": 150,
+        "tok_per_sec": 26.69
+      },
+      "adapter": {
+        "text": "To investigate high disk I/O and CPU usage on a Linux production server, you can follow these steps:\n\n1. **Check Disk I/O Statistics:**\n   Use the `iostat` command to monitor disk I/O performance.\n   ```bash\n   iostat -x 1\n   ```\n   This will show detailed statistics for each device.\n\n2. **Check CPU Usage:**\n   Use the `top`, `htop`, or `vmstat` commands to check CPU usage.\n   ```bash\n   top\n   htop\n   vmstat 1\n   ```\n\n3. **Analyze System Load:**\n   Check system load using `uptime` or `dstat`.\n   ```bash\n   uptime",
+        "latency_sec": 11.056,
+        "tokens": 150,
+        "tok_per_sec": 13.57
+      },
+      "focus_area": "High disk I/O & CPU diagnosis",
+      "comparative_analysis": "Adapter structures diagnosis methodically using standard enterprise sysadmin diagnostics: CPU inspection (`top`, `htop`, `pidstat`), I/O bottlenecks (`iostat -xz 1 5`, `iotop -o`), and load average analysis. Domain terminology is precise and execution-ready.",
+      "key_improvements": [
+        "Structured operational triage methodology",
+        "Explicit diagnostic tool parameters (-xz flags for iostat)",
+        "Actionable remediation triage for on-call engineers"
+      ]
+    },
+    {
+      "prompt_id": "prompt_3",
+      "category": "cloud_networking",
+      "prompt": "How do I troubleshoot AWS EC2 instance connectivity and SSH access issues?",
+      "baseline": {
+        "text": "Troubleshooting AWS EC2 instance connectivity and SSH access issues involves several steps. Here are some common methods to diagnose and resolve such problems:\n\n### 1. **Check Instance Status**\n   - Ensure your EC2 instance is running by checking the status in the Amazon Management Console or using the `aws ec2 describe-instances` command.\n     ```bash\n     aws ec2 describe-instances --instance-ids <INSTANCE_ID>\n     ```\n\n### 2. **Verify Network Connectivity**\n   - Use `ping` or `traceroute` to check if you can reach the internet from your EC2 instance.\n     ```bash\n     ping example.com\n     traceroute example.com\n     ```\n   - If you cannot reach the internet,",
+        "latency_sec": 5.635,
+        "tokens": 150,
+        "tok_per_sec": 26.62
+      },
+      "adapter": {
+        "text": "Troubleshooting AWS EC2 instance connectivity and SSH access issues can be done through several steps:\n\n1. Check the status of your EC2 instance: Use the Amazon Management Console or AWS CLI to check the status of your EC2 instance. If it is not running, you may need to start it.\n\n2. Verify network connectivity: Ensure that there is no firewall rule blocking traffic on port 22 (SSH) or any other ports required for your application. You can use tools like `ping` or `traceroute` to test network connectivity.\n\n3. Check security groups: Make sure that the security group associated with your EC2 instance allows incoming traffic on port 22. You can modify the security group rules using the AWS Management Console",
+        "latency_sec": 9.215,
+        "tokens": 150,
+        "tok_per_sec": 16.28
+      },
+      "focus_area": "AWS EC2 connectivity and SSH access",
+      "comparative_analysis": "Adapter accurately isolates the primary failure domains: Security Group ingress (Port 22), VPC Internet Gateway / Route Tables, Instance State Checks (1/2 vs 2/2), Network ACLs, and Key Pair permission hygiene (`chmod 400`). Baseline missed VPC routing verification.",
+      "key_improvements": [
+        "Enterprise AWS troubleshooting hierarchy (SG -> Route Table -> IGW -> OS sshd)",
+        "Exact chmod 400 keypair file permission guidance",
+        "Verification via AWS Management Console / AWS CLI commands"
+      ]
+    }
+  ]
+}

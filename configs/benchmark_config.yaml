@@ -1,0 +1,63 @@
+# ============================================================
+# Benchmarking Configuration
+# Enterprise Domain LLM — Assignment 1B
+# ============================================================
+
+benchmark:
+  warmup_runs: 1
+  timed_runs: 1
+  max_new_tokens: 150
+  record_memory: true
+  memory_unit: "MB"
+
+# Part C Step 1: 5 Strategies, 7 configurations total
+decoding_strategies:
+  greedy:
+    do_sample: false
+    num_beams: 1
+    description: "Greedy Decoding (argmax, deterministic)"
+  beam_search:
+    do_sample: false
+    num_beams: 4
+    early_stopping: true
+    description: "Beam Search (num_beams=4)"
+  top_k:
+    do_sample: true
+    top_k: 50
+    temperature: 1.0
+    description: "Top-K Sampling (k=50, temp=1.0)"
+  top_p:
+    do_sample: true
+    top_p: 0.9
+    temperature: 1.0
+    description: "Top-P Nucleus Sampling (p=0.9, temp=1.0)"
+  temp_0_2:
+    do_sample: true
+    temperature: 0.2
+    top_p: 1.0
+    description: "Temperature Scaling 0.2 (conservative/safe)"
+  temp_0_7:
+    do_sample: true
+    temperature: 0.7
+    top_p: 1.0
+    description: "Temperature Scaling 0.7 (balanced)"
+  temp_1_0:
+    do_sample: true
+    temperature: 1.0
+    top_p: 1.0
+    description: "Temperature Scaling 1.0 (diverse/creative)"
+
+# Part C Step 2: Speculative Decoding
+speculative:
+  target_model_name: "Qwen/Qwen2.5-1.5B-Instruct"
+  draft_model_name: "Qwen/Qwen2.5-0.5B-Instruct"
+  num_assistant_tokens: 5
+
+# Part C Step 3: Production Cost Analysis
+production_rates:
+  t4_hourly_inr: 3.50
+  a100_hourly_inr: 12.00
+
+output:
+  results_dir: "results"
+  charts_dir: "results/charts"

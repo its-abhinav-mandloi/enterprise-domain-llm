@@ -1,0 +1,4 @@
+prompt_id,category,std_time_sec,std_tok_sec,spec_time_sec,spec_tok_sec,speedup_pct
+prompt_1,linux_storage,7.054,21.27,12.167,12.33,-42.0
+prompt_2,linux_performance,7.022,21.36,8.0,18.75,-12.2
+prompt_3,cloud_networking,7.295,20.56,8.216,18.26,-11.2
