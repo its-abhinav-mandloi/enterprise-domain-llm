@@ -1,0 +1,30 @@
+{
+  "model_name": "Qwen/Qwen2.5-1.5B-Instruct",
+  "adapter_config": "Adapter B (Balanced)",
+  "lora_r": 16,
+  "lora_alpha": 32,
+  "target_modules": [
+    "q_proj",
+    "v_proj"
+  ],
+  "trainable_params": 2179072,
+  "total_params": 1545893376,
+  "trainable_pct": 0.141,
+  "use_4bit_qlora": false,
+  "precision": "bfloat16 LoRA on MPS (4-bit NF4 requires CUDA)",
+  "device": "mps",
+  "train_examples": 465,
+  "eval_examples": 116,
+  "num_train_epochs": 2,
+  "total_steps": 60,
+  "max_length": 384,
+  "per_device_batch_size": 4,
+  "gradient_accumulation_steps": 4,
+  "effective_batch_size": 16,
+  "learning_rate": 0.0002,
+  "initial_eval_loss": 3.1321,
+  "final_eval_loss": 1.9787,
+  "final_train_loss": 2.0767,
+  "average_train_loss": 2.2738,
+  "train_runtime_sec": 1289.92
+}

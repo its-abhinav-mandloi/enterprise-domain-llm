@@ -1,30 +1,34 @@
 {
   "metadata": {
     "model_name": "Qwen/Qwen2.5-1.5B-Instruct",
+    "draft_model_name": "Qwen/Qwen2.5-0.5B-Instruct",
     "device": "mps",
+    "base_dtype": "torch.bfloat16",
     "prompts_count": 10,
     "max_new_tokens": 150,
     "hourly_rates_inr": {
       "T4": 3.5,
       "A100": 12.0
-    }
+    },
+    "cuda_4bit_measured": false
   },
-  "recommendation": "We recommend deploying the **4-bit NF4 + Speculative Decoding** configuration on an NVIDIA T4 GPU instance for production enterprise IT helpdesk operations. This architecture achieves the lowest serving cost of \u20b923.49 per 1 million tokens while consuming only 1.57 GB of VRAM (well within the T4's 16 GB boundary). Because speculative verification guarantees mathematical equivalence to the target model's greedy output, this setup delivers maximum generation throughput without compromising technical troubleshooting accuracy or command fidelity.",
+  "recommendation": "On local Apple Silicon M4 MPS, the empirically measured `bfloat16` baseline achieved **27.42 tok/s** at **2.9 GB** memory (**\u20b935.46/1M tokens** at T4 rate; **\u20b9121.57/1M tokens** at A100 rate). Because `bitsandbytes` 4-bit NF4 kernels require NVIDIA CUDA, 4-bit NF4 and 4-bit + Speculative rows are not fabricated locally and are prepared for one-click empirical execution in `notebooks/assignment_1B_colab_t4.ipynb` on a free Google Colab T4 GPU.",
   "configurations": [
     {
       "configuration": "bfloat16 (Part A baseline)",
       "device": "mps",
+      "measured": true,
       "peak_vram_gb": 2.9,
-      "throughput_tok_s": 23.22,
-      "cost_t4_inr": 41.87,
-      "cost_a100_inr": 143.55,
+      "throughput_tok_s": 27.42,
+      "cost_t4_inr": 35.46,
+      "cost_a100_inr": 121.57,
       "runs": [
         {
           "id": "p1",
           "prompt": "How do I troubleshoot an Ubuntu server that cannot mount an NTFS drive?",
           "generated_tokens": 150,
-          "time_sec": 6.41,
-          "tok_per_sec": 23.4,
+          "time_sec": 5.565,
+          "tok_per_sec": 26.96,
           "memory_mb": 2968.78,
           "output_preview": "To troubleshoot a problem with mounting an NTFS drive on an Ubuntu server, you can follow these steps:\n\n1. **Check the Filesystem Type**: First, verif"
         },
@@ -32,8 +36,8 @@
           "id": "p2",
           "prompt": "How do I investigate high disk I/O and CPU usage on a Linux production server?",
           "generated_tokens": 150,
-          "time_sec": 6.435,
-          "tok_per_sec": 23.31,
+          "time_sec": 5.602,
+          "tok_per_sec": 26.78,
           "memory_mb": 2968.78,
           "output_preview": "To investigate high disk I/O and CPU usage on a Linux production server, you can follow these steps:\n\n1. **Check Disk I/O Statistics:**\n   Use the `io"
         },
@@ -41,8 +45,8 @@
           "id": "p3",
           "prompt": "How do I troubleshoot AWS EC2 instance connectivity and SSH access issues?",
           "generated_tokens": 150,
-          "time_sec": 6.019,
-          "tok_per_sec": 24.92,
+          "time_sec": 5.532,
+          "tok_per_sec": 27.12,
           "memory_mb": 2968.78,
           "output_preview": "Troubleshooting AWS EC2 instance connectivity and SSH access issues involves several steps. Here are some common methods to diagnose and resolve such "
         },
@@ -50,8 +54,8 @@
           "id": "p4",
           "prompt": "What steps should I follow when a systemd service enters a crash-loop state on Linux?",
           "generated_tokens": 150,
-          "time_sec": 5.758,
-          "tok_per_sec": 26.05,
+          "time_sec": 5.469,
+          "tok_per_sec": 27.43,
           "memory_mb": 2968.78,
           "output_preview": "When a systemd service in my Linux system is stuck in a \"crash-loop\" state, it means the service has stopped responding and is not restarting properly"
         },
@@ -59,8 +63,8 @@
           "id": "p5",
           "prompt": "How do I resolve a corporate VPN client authentication failure on macOS or Linux?",
           "generated_tokens": 150,
-          "time_sec": 6.032,
-          "tok_per_sec": 24.87,
+          "time_sec": 5.422,
+          "tok_per_sec": 27.66,
           "memory_mb": 2968.78,
           "output_preview": "To troubleshoot and resolve a corporate VPN client authentication failure, follow these steps:\n\n1. **Check the Network Connection:**\n   - Ensure that "
         },
@@ -68,8 +72,8 @@
           "id": "p6",
           "prompt": "How can I diagnose DNS resolution timeouts and DNS leak issues on a Linux server?",
           "generated_tokens": 150,
-          "time_sec": 7.779,
-          "tok_per_sec": 19.28,
+          "time_sec": 5.418,
+          "tok_per_sec": 27.69,
           "memory_mb": 2968.78,
           "output_preview": "To diagnose DNS resolution timeouts and DNS leak issues on a Linux server, you can follow these steps:\n\n1. Check the system logs: Look for any error m"
         },
@@ -77,8 +81,8 @@
           "id": "p7",
           "prompt": "What commands are used to check and repair a corrupted ext4 or XFS filesystem?",
           "generated_tokens": 150,
-          "time_sec": 6.757,
-          "tok_per_sec": 22.2,
+          "time_sec": 5.434,
+          "tok_per_sec": 27.6,
           "memory_mb": 2968.78,
           "output_preview": "To check for corruption in an ext4 or XFS filesystem, you can use the `fsck` command. Here's how you can do it:\n\n### For Ext4 Filesystem\n1. **Check th"
         },
@@ -86,8 +90,8 @@
           "id": "p8",
           "prompt": "How do I configure and verify Red Hat Enterprise Linux firewall rules using firewalld?",
           "generated_tokens": 150,
-          "time_sec": 5.803,
-          "tok_per_sec": 25.85,
+          "time_sec": 5.402,
+          "tok_per_sec": 27.77,
           "memory_mb": 2968.78,
           "output_preview": "To configure and verify Red Hat Enterprise Linux (RHEL) firewall rules with `firewalld`, follow these steps:\n\n### Step 1: Install Firewalld\nFirst, ens"
         },
@@ -95,8 +99,8 @@
           "id": "p9",
           "prompt": "How do I troubleshoot high connection pooling exhaustion in PostgreSQL database server?",
           "generated_tokens": 150,
-          "time_sec": 6.595,
-          "tok_per_sec": 22.74,
+          "time_sec": 5.378,
+          "tok_per_sec": 27.89,
           "memory_mb": 2968.78,
           "output_preview": "To troubleshoot high connection pooling exhaustion in a PostgreSQL database server, you can follow these steps:\n\n1. Check the number of connections: U"
         },
@@ -104,8 +108,8 @@
           "id": "p10",
           "prompt": "What is the procedure to expand an AWS EBS root volume without rebooting the instance?",
           "generated_tokens": 150,
-          "time_sec": 7.018,
-          "tok_per_sec": 21.37,
+          "time_sec": 5.483,
+          "tok_per_sec": 27.36,
           "memory_mb": 2968.78,
           "output_preview": "To expand an Amazon Elastic Block Store (EBS) root volume on an EC2 instance without needing to restart the instance, you can follow these steps:\n\n###"
         }
@@ -113,22 +117,23 @@
     },
     {
       "configuration": "4-bit NF4 quantized",
-      "device": "CUDA (T4 target projection)",
-      "peak_vram_gb": 1.22,
-      "throughput_tok_s": 31.35,
-      "cost_t4_inr": 31.01,
-      "cost_a100_inr": 106.33,
-      "is_hardware_supported_locally": false,
+      "device": "Requires NVIDIA CUDA (run notebooks/assignment_1B_colab_t4.ipynb)",
+      "measured": false,
+      "peak_vram_gb": null,
+      "throughput_tok_s": null,
+      "cost_t4_inr": null,
+      "cost_a100_inr": null,
       "runs": []
     },
     {
       "configuration": "4-bit + Speculative Decoding (Step 2)",
-      "device": "CUDA (T4 target projection)",
-      "peak_vram_gb": 1.57,
-      "throughput_tok_s": 41.38,
-      "cost_t4_inr": 23.49,
-      "cost_a100_inr": 80.55,
-      "is_hardware_supported_locally": false
+      "device": "Requires NVIDIA CUDA (run notebooks/assignment_1B_colab_t4.ipynb)",
+      "measured": false,
+      "peak_vram_gb": null,
+      "throughput_tok_s": null,
+      "cost_t4_inr": null,
+      "cost_a100_inr": null,
+      "runs": []
     }
   ]
 }

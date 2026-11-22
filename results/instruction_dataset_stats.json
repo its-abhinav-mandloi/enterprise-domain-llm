@@ -1,0 +1,53 @@
+{
+  "total_pairs": 581,
+  "train_pairs": 465,
+  "eval_pairs": 116,
+  "train_ratio": 0.8003,
+  "eval_ratio": 0.1997,
+  "random_seed": 42,
+  "generation_method": "Section-anchored, sentence-boundary grounded extraction directly from the 6 cleaned domain corpus manuals (ligature normalization, hyphen rejoining, TOC/header stripping, strict sentence-start/end validation, and SHA-256 deduplication; zero external facts).",
+  "avg_instruction_chars": 79.2,
+  "avg_response_chars": 592.2,
+  "avg_words_per_example": 107.3,
+  "estimated_avg_tokens_per_example": 142.7,
+  "per_source_counts": {
+    "aws_ec2_userguide_clean.txt": 100,
+    "bash_manual_clean.txt": 81,
+    "gcc_manual_clean.txt": 100,
+    "postgresql_manual_clean.txt": 100,
+    "redhat_sysadmin_clean.txt": 100,
+    "ubuntu_server_guide_clean.txt": 100
+  },
+  "sample_pairs": [
+    {
+      "instruction": "Provide an overview of Use of Secondary File Systems in PostgreSQL 17.",
+      "response": "Many installations create their database clusters on file systems (volumes) other than the machine's \"root\" volume. If you choose to do this, it is not advisable to try to use the secondary volume's topmost directory (mount point) as the data directory. Best practice is to create a directory within the mountpoint directory that is owned by the PostgreSQL user, and then create the data directory within that. This avoids permissions problems, particularly for operations such as pg_upgrade, and it also ensures clean failures if the secondary volume is taken offline.",
+      "source": "postgresql_manual_clean.txt",
+      "topic": "Use of Secondary File Systems"
+    },
+    {
+      "instruction": "Explain Public Key Infrastructure Setup in Ubuntu Server based on the official documentation.",
+      "response": "The first step in building an OpenVPN configuration is to establish a PKI (public key infrastructure). The PKI consists of:\n• a separate certificate (also known as a public key) and private key for the server and each client.\n• a master Certificate Authority (CA) certificate and key, used to sign the server and client certificates. OpenVPN supports bidirectional authentication based on certificates, meaning that the client must authenticate the server certificate and the server must authenticate the client certificate before mutual trust is established.",
+      "source": "ubuntu_server_guide_clean.txt",
+      "topic": "Public Key Infrastructure Setup"
+    },
+    {
+      "instruction": "Explain the key steps and considerations for removing a user on the command line in Red Hat Enterprise Linux 9.",
+      "response": "You can remove a user account by using the command line. In addition, below mentioned are the commands to remove the user account, and optionally remove the user data and metadata, such as their home directory and configuration files. You have root access. The user currently exists. Ensure that the user is logged out: # loginctl terminate-user user-name To only remove the user account, and not the user data: # userdel user-name To remove the user, the data, and the metadata: a. Remove the user, their home directory, their mail spool, and their SELinux user mapping: # userdel --remove --selinux-user user-name b.",
+      "source": "redhat_sysadmin_clean.txt",
+      "topic": "Removing a user on the command line"
+    },
+    {
+      "instruction": "In Red Hat Enterprise Linux 9, what is the recommended procedure for managing the access control list?",
+      "response": "Each file and directory can only have one user owner and one group owner at a time. If you want to grant a user permissions to access specific files or directories that belong to a different user or group while keeping other files and directories private, you can utilize Linux Access Control Lists (ACLs).",
+      "source": "redhat_sysadmin_clean.txt",
+      "topic": "Managing the access control list"
+    },
+    {
+      "instruction": "In Ubuntu Server, how does Anonymous FTP Configuration work?",
+      "response": "By default vsftpd is not configured to allow anonymous download. If you wish to enable anonymous download edit /etc/vsftpd.conf by changing: anonymous_enable=YES During installation a ftp user is created with a home directory of /srv/ftp. This is the default FTP directory. If you wish to change this location, to /srv/ files /ftp for example, simply create a directory in another location and change the ftp user's home directory: ftp After making the change restart vsftpd: sudo systemctl Finally, copy any files and directories you would like to make available through anonymous FTP to /srv/ files /ftp, or /srv/ftp if you wish to use the default.",
+      "source": "ubuntu_server_guide_clean.txt",
+      "topic": "Anonymous FTP Configuration"
+    }
+  ]
+}

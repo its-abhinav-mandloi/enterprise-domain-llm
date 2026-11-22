@@ -1,152 +1,98 @@
-# Enterprise Domain-Specific LLM — Final Project & Academic Submission Report
-## V5: IT Helpdesk & Incident Resolution Assistant
-
-**Course:** Domain LLM Adaptation & Production Serving  
-**Assignment:** Assignment 1B — Domain LLM Adaptation & Production Optimization  
-**Student / Engineer:** Abhinav Mandloi  
-**Date of Submission:** November 2026  
-**Hardware Platform:** Apple MacBook Air M4 (24 GB Unified Memory, macOS 27.2.1)  
-**Target Model:** `Qwen/Qwen2.5-1.5B-Instruct` | **Draft Model:** `Qwen/Qwen2.5-0.5B-Instruct`  
+# Enterprise Domain-Specific LLM — Assignment 1B Final Technical Report
+## Variant V5: IT Helpdesk & Incident Resolution Assistant
 
 ---
 
-## 1. Executive Summary & Problem Formulation
+## 1. Executive Summary
 
-In modern enterprise IT operations, site reliability engineers (SREs), DevOps practitioners, and helpdesk technicians confront incident resolution challenges spanning heterogeneous infrastructures: Linux operating system anomalies (Ubuntu, Red Hat), cloud connectivity failures (AWS EC2), filesystem corruption, and database bottlenecking (PostgreSQL). General-purpose LLMs frequently produce conversational fluff, hallucinate command-line flags, or generate non-deterministic outputs inappropriate for mission-critical incident runbooks.
+This report documents the end-to-end engineering implementation, empirical evaluation, and production optimization of an enterprise **IT Helpdesk & Incident Resolution Assistant** built for **Assignment 1B (Domain LLM Adaptation & Production Optimization)**.
 
-This project implements an end-to-end, reproducible pipeline fulfilling all 15 marks of university Assignment 1B:
-1. **Domain Data Engineering (Part A1, 1 Mark):** Curated, extracted, and cleaned an 18.04-million-character corpus from 6 authoritative technical manuals (9,239 pages).
-2. **Pre-Adaptation Baseline (Part A2, 1 Mark):** Benchmarked `Qwen/Qwen2.5-1.5B-Instruct` in pure `bfloat16` across three canonical enterprise prompts without system prompt guidance.
-3. **Instruction Dataset Creation (Part B1, 2 Marks):** Synthesized 720 strictly grounded instruction-response pairs partitioned 80/20 into train/eval splits.
-4. **QLoRA Fine-Tuning (Part B2, 2 Marks):** Adapted the base model using PEFT LoRA (Adapter B: Rank 16, Alpha 32) targeting self-attention projection weights (`q_proj`, `v_proj`).
-5. **Evaluation & Comparative Analysis (Part B3, 1 Mark):** Conducted structured side-by-side comparative analysis demonstrating dramatic improvements in command precision and incident triage structure.
-6. **Decoding Strategies (Part C1, 3 Marks):** Benchmarked 5 decoding strategies across 7 configurations with exact throughput profiling and a 100-word deployment analysis.
-7. **Speculative Decoding (Part C2, 2 Marks):** Accelerated inference using a compatible draft model (`Qwen2.5-0.5B`), measuring throughput speedups without mathematical output degradation.
-8. **Quantization & Economics (Part C3, 3 Marks):** Profiled 4-bit NF4 quantization across 10 domain queries and computed exact serving costs on NVIDIA T4 and A100 architectures.
+- **Target Model:** `Qwen/Qwen2.5-1.5B-Instruct` (`1,543,714,816` parameters, 28 decoder layers, hidden dimension 1,536, vocabulary 151,936)
+- **Draft Model (Speculative Decoding):** `Qwen/Qwen2.5-0.5B-Instruct` (`~0.49B` parameters, identical tokenizer/vocabulary)
+- **Local Hardware:** Apple MacBook Air M4 (24 GB Unified Memory, Apple Silicon ARM64, PyTorch MPS backend)
+- **CUDA Portability:** Full 4-bit NF4 QLoRA & BitsAndBytes CUDA execution packaged in `notebooks/assignment_1B_colab_t4.ipynb` for zero-friction Google Colab T4 execution.
+
+All local results reported below are **100% empirically measured** with zero fabricated or projected numbers.
 
 ---
 
-## 2. Hardware Architecture & System Boundaries
+## 2. Part A — Domain Data Collection & Pre-Adaptation Baseline [2 Marks]
 
-### Hardware Specifications
-- **Processor:** Apple Silicon M4 (10-core CPU: 4 performance + 6 efficiency cores).
-- **Unified Memory:** 24.0 GB Unified LPDDR5X Memory with memory bandwidth of ~150 GB/s.
-- **Operating System:** macOS Sequoia 27.2.1 (Darwin 26B131).
-- **ML Runtime:** PyTorch 2.15.0 with Metal Performance Shaders (MPS) backend.
+### Step A1: Corpus Collection & Cleaning
+Six official enterprise IT and Linux administration PDFs (9,239 pages total) were extracted page-by-page using PyMuPDF and cleaned via length filtering (≥100 characters/page), exact SHA-256 deduplication, 5-gram Jaccard near-deduplication (0.85 threshold), and English language verification (`langdetect`):
 
-### Engineering Boundary Analysis
-Apple Silicon Unified Memory architecture provides exceptional memory bandwidth and enables multiple models to reside simultaneously in memory without PCIe bus bottlenecking. However, `bitsandbytes` 4-bit NF4 quantization relies on proprietary NVIDIA CUDA kernels (`libbitsandbytes_cuda*.so`) unavailable on Apple Metal. 
+| Cleaning Stage | Corpus Volume (Chars) | Change | Notes |
+| :--- | :---: | :---: | :--- |
+| **Raw Extracted (6 PDFs, 9,239 pages)** | 18,232,885 | — | AWS EC2, PostgreSQL 17, GCC, Ubuntu Server, Bash, RHEL 9 |
+| **Length Filter (≥100 chars/page)** | 18,040,053 | **-192,832** | **Greatest reduction stage** (removes blank/cover/divider pages) |
+| **Exact SHA-256 + Near-Dedup** | 18,040,053 | 0 | Zero duplicate documents; repeated sparse pages already filtered |
+| **Language Filter (`langdetect`, EN)** | 18,040,053 | 0 | 100% English technical documentation verified |
 
-To maintain academic rigor and execution integrity without fabricating measurements:
-- All baseline, LoRA fine-tuning, decoding, and speculative decoding experiments run natively on local Apple Silicon M4 MPS using `bfloat16`.
-- 4-bit NF4 quantization economics are modeled using exact mathematical scaling laws and validated via Google Colab NVIDIA T4 GPU portable scripts.
+All 6 cleaned files are stored individually under `data/domain_corpus/*_clean.txt`.
 
----
-
-## 3. Part A — Data Collection & Baseline Output
-
-### Step A1: Corpus Extraction & Cleaning
-Six official domain manuals were downloaded and ingested:
-1. `aws_ec2_userguide.pdf` (4,151 pages, 5,981,613 characters)
-2. `postgresql_manual.pdf` (3,120 pages, 7,398,082 characters)
-3. `gcc_manual.pdf` (1,261 pages, 3,280,692 characters)
-4. `ubuntu_server_guide.pdf` (377 pages, 833,528 characters)
-5. `bash_manual.pdf` (214 pages, 555,181 characters)
-6. `redhat_sysadmin.pdf` (116 pages, 183,789 characters)
-
-**Cleaning Pipeline Progression:**
-- Raw Extracted Volume: **18,232,885 characters** (9,239 pages).
-- Length Filtering ($< 100$ characters): Removed 192,832 characters (header/footer noise).
-- Exact Deduplication (SHA-256): 0 redundant duplicate documents identified.
-- Language Filtering (`langdetect`): 100% English technical content retained.
-- Final Corpus Size: **18,040,053 characters** saved in `data/domain_corpus/*.txt`.
-- **Greatest Reduction Stage:** Length filtering.
-
-### Step A2: Pre-Adaptation Baseline Output
-`Qwen/Qwen2.5-1.5B-Instruct` was loaded in `bfloat16` on Apple MPS. Architecture summary:
-- **Total Parameters:** 1,543,714,816 (~1.54 Billion)
-- **Decoder Layers:** 28
-- **Hidden Dimension ($d_{\text{model}}$):** 1,536
-- **Vocabulary Size:** 151,936
-- **Attention Type:** Grouped-Query Attention (GQA, 12 query heads, 2 key/value heads)
-
-Outputs were collected across the three canonical domain prompts with zero system prompt:
-1. `prompt_1`: NTFS mount failure on Ubuntu Server.
-2. `prompt_2`: High disk I/O and CPU investigation on Linux.
-3. `prompt_3`: AWS EC2 instance connectivity and SSH troubleshooting.
+### Step A2: Pre-Adaptation Baseline (`bfloat16`, Zero System Prompt)
+Evaluated `Qwen/Qwen2.5-1.5B-Instruct` in `bfloat16` on MPS across the 3 canonical prompts (`max_new_tokens=150`, no system prompt):
+- **Prompt 1 (NTFS mount on Ubuntu):** 150 tokens | 7.58s | **19.79 tok/s**
+- **Prompt 2 (High disk I/O & CPU on Linux):** 150 tokens | 5.62s | **26.69 tok/s**
+- **Prompt 3 (AWS EC2 connectivity & SSH):** 150 tokens | 5.64s | **26.62 tok/s**
 
 ---
 
-## 4. Part B — Instruction Fine-Tuning with QLoRA
+## 3. Part B — Instruction Dataset, Fine-Tuning & Comparative Analysis [5 Marks]
 
-### Step B1: Dataset Synthesis & Partitioning
-Using our heuristic sliding-window instruction generator, 720 grounded pairs were synthesized directly from the cleaned domain corpus:
-- **Format:** Strict JSONL schema `{"instruction": "...", "response": "..."}`.
-- **Partitioning:** Fixed seed (42), 80% training (**576 examples**), 20% validation (**144 examples**).
-- **Grounding Guarantee:** All answers directly reference source documentation concepts, eliminating unverified external facts.
+### Part B1: Strictly Corpus-Grounded Instruction Dataset
+Using `src/data/instruction_generator.py`, we normalized PDF typography (ligatures, hyphenated line breaks, TOC/page header stripping) and extracted section-anchored, sentence-boundary Q&A pairs exclusively from the 6 cleaned manuals in `data/domain_corpus/`:
+- **Total Unique Pairs:** **581** (100 AWS EC2, 81 GNU Bash, 100 GCC, 100 PostgreSQL 17, 100 RHEL 9, 100 Ubuntu Server)
+- **80/20 Split (`seed=42`):** **465 training pairs (`data/train.jsonl`)** / **116 evaluation pairs (`data/eval.jsonl`)**
+- **Average Length:** 107.3 words (~142.7 tokens/example), fitting comfortably within `max_length=384` without truncation
+- **Quality Guarantees:** Automated unit tests verify 100% unique instructions, zero TOC dot-leader artifacts, clean sentence-start capitalization, and complete sentence-ending punctuation.
 
-### Step B2: QLoRA Adapter B Training
-- **LoRA Rank ($r$):** 16
-- **LoRA Alpha ($\\alpha$):** 32 (Scaling ratio = 2.0)
-- **Target Modules:** `q_proj`, `v_proj`
-- **Trainable Parameters:** ~2.35M / 1,543M (~0.15% parameter overhead)
-- **Hyperparameters:** Effective batch size 8 (batch 2 $\times$ accum 4), learning rate $2 \times 10^{-4}$ with cosine decay, 1 epoch.
-- **Checkpoint:** Saved to `models/lora_adapter/`.
+### Part B2: Adapter B Fine-Tuning (`r=16, alpha=32, q_proj, v_proj`)
+- **Trainable Parameters:** `2,179,072` / `1,545,893,376` (`0.1410%`)
+- **Hyperparameters:** 2 epochs (60 optimization steps), `max_length=384`, `per_device_batch_size=4`, `gradient_accumulation_steps=4` (effective batch size = 16), `lr=2e-4` cosine schedule, `warmup_steps=5`, Qwen2.5 native chat template.
+- **Measured Convergence (Apple MPS `bfloat16` LoRA):**
+  - **Step 0 (Pre-Training) Eval Loss:** `3.1321`
+  - **Epoch 1 (Step 30) Eval Loss:** `2.0723` (Train Loss: `2.1521`)
+  - **Epoch 2 (Step 60) Eval Loss:** **`1.9787`** (Final Train Loss: `2.0767`, **-36.8% reduction in held-out eval loss**)
+- **CUDA 4-bit QLoRA Portability:** `src/training/qlora_trainer.py` and `notebooks/assignment_1B_colab_t4.ipynb` automatically enable `BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4", bnb_4bit_use_double_quant=True)` with `paged_adamw_8bit` on CUDA GPUs.
 
-### Step B3: Side-by-Side Comparative Analysis
-| Evaluation Criterion | Pre-Adaptation Baseline | Fine-Tuned LoRA Adapter |
-| :--- | :--- | :--- |
-| **Technical Correctness** | Explains NTFS concepts generally; suggests mounting without checking driver. | Explicitly instructs `sudo apt-get install ntfs-3g` and `mount -t ntfs-3g`. |
-| **Domain Terminology** | Generic phrases ("check system performance"). | Precise enterprise utilities: `iostat -xz 1 5`, `iotop -o`, `pidstat -u 1`. |
-| **Actionable Formatting** | Narrative paragraphs. | Structured triage checklists with shell commands in Markdown code blocks. |
-| **Hallucination Control** | Minor risk of non-existent AWS console navigation paths. | Fully verified AWS VPC routing, SG port 22, and `chmod 400 key.pem` hygiene. |
-
----
-
-## 5. Part C — Inference Optimization & Production Metrics
-
-### Step C1: Decoding Strategies & Sampling Benchmark
-Benchmarked across 7 configurations with `max_new_tokens = 150`:
-1. **Greedy Decoding:** Highest throughput, deterministic argmax selection.
-2. **Beam Search ($k=4$):** Coherent but suffers a ~3.2x latency penalty due to multiple beam maintenance.
-3. **Top-K Sampling ($k=50$):** Introduces vocabulary diversity.
-4. **Top-P Sampling ($p=0.9$):** Dynamically adjusts candidate set per token.
-5. **Temperature Scaling ($0.2, 0.7, 1.0$):** $T=0.2$ preserves domain accuracy; $T=1.0$ increases hallucination risk.
-
-> **100-Word Deployment Recommendation:**  
-> For an enterprise IT Helpdesk & Incident Resolution Assistant (V5), the optimal production strategy is **Greedy Decoding or conservative Temperature Scaling ($T=0.2$)**. IT incident triage requires deterministic, verifiable commands (e.g., `mount -t ntfs-3g`, `iostat -xz 1 5`, `chmod 400`) where consistency and factual accuracy take absolute precedence over linguistic novelty. In our benchmark, Greedy Decoding delivered the lowest latency and highest throughput without sampling variance, eliminating hallucinated CLI flags. In contrast, Beam Search introduced a ~3.2x latency penalty unsuitable for real-time SLA response, while high temperatures ($T=1.0$) occasionally generated non-existent subcommands and disorganized parameter recommendations.
-
-### Step C2: Speculative Decoding
-- **Target:** `Qwen/Qwen2.5-1.5B-Instruct` | **Draft:** `Qwen/Qwen2.5-0.5B-Instruct`
-- Both models share the identical 151,936 BPE vocabulary.
-- Co-reside simultaneously in 24 GB Unified Memory (~4.08 GB combined).
-- Delivers an average **~30-35% throughput speedup** while guaranteeing 100% token distribution equivalence to greedy target decoding.
-
-### Step C3: 4-Bit NF4 Quantization & Cloud Economics
-Evaluated across 10 domain queries using university cost rates (T4: ₹3.50/hr, A100: ₹12.00/hr) with the formula:
-$$\text{Cost / 1M tokens} = \left(\frac{1,000,000}{\text{throughput}} \times \frac{\text{hourly\_rate}}{3,600}\right)$$
-
-| Serving Architecture | Peak VRAM | Throughput | Cost / 1M Tokens (T4 @ ₹3.50/hr) | Cost / 1M Tokens (A100 @ ₹12.00/hr) |
-| :--- | :---: | :---: | :---: | :---: |
-| **bfloat16 Baseline** | 3.09 GB | 38.5 tok/s | ₹25.26 | ₹86.60 |
-| **4-bit NF4 Quantized** | 0.95 GB | 52.0 tok/s | ₹18.69 | ₹64.10 |
-| **4-bit NF4 + Speculative Decoding** | 1.30 GB | 68.6 tok/s | **₹14.16** | **₹48.56** |
-
-### Production Deployment Recommendation (2–3 Sentences)
-We recommend deploying the **4-bit NF4 + Speculative Decoding** configuration on an NVIDIA T4 GPU instance for production enterprise IT helpdesk operations. This architecture achieves the lowest serving cost of **₹14.16 per 1 million tokens** while consuming only **1.30 GB of VRAM** (well within the T4's 16 GB boundary). Because speculative verification guarantees mathematical equivalence to the target model's greedy output, this setup delivers maximum generation throughput without compromising technical troubleshooting accuracy or command fidelity.
+### Part B3: Evidence-Backed Comparative Analysis (Baseline vs. Adapter)
+Evaluated on the exact 3 canonical prompts (`results/evaluation/comparative_analysis.md`):
+- **Prompt 1 (NTFS Mount):** Adapter packed denser prose (120 words / 3 inline steps vs. 82 words / 2 steps) and introduced `kernel` support checks, while baseline surfaced `lsblk`/`fdisk` earlier. Honest audit also flagged a minor command hallucination in the adapter (`chattr +r /mnt/ntfs` instead of `mount -o remount,rw` / `ntfs-3g`), illustrating why small-rank adaptation on narrow corpora benefits from explicit troubleshooting command examples or RAG grounding.
+- **Prompt 2 (Disk I/O & CPU):** Adapter achieved higher information density (129 words / 3 steps vs. 81 words / 3 steps) covering `top`, `uptime`, `iostat`, and `vmstat`, while unmerged LoRA incurred a 12.5% speed overhead (23.35 vs 26.69 tok/s) removable via `merge_and_unload()`.
+- **Prompt 3 (AWS EC2 SSH):** Adapter immediately prioritized AWS-native failure domains (`Amazon VPC`, `security group`, `port 22`, `VPC endpoint` DNS) across 4 steps (118 words vs. 93 words baseline).
 
 ---
 
-## 6. Academic Deliverables Verification Manifest
+## 4. Part C — Inference Optimization & Production Economics [8 Marks]
 
-- [x] Python Notebooks with executed outputs: `notebooks/00` to `notebooks/08`.
-- [x] Exported HTML version: `submission/assignment_1B.html`.
-- [x] Final JSONL dataset: `data/instruction_dataset.jsonl` (720 pairs).
-- [x] Cleaned domain text files: `data/domain_corpus/*.txt` (6 documents).
-- [x] Pre-adaptation baseline outputs: `results/baseline/baseline_outputs.json`.
-- [x] Trained QLoRA adapter: `models/lora_adapter/`.
-- [x] Decoding benchmark matrix & CSV: `results/decoding/decoding_benchmark.csv`.
-- [x] Speculative decoding results: `results/speculative/speculative_benchmark.csv`.
-- [x] 4-bit quantization economics table: `results/quantization/quantization_cost_results.json`.
-- [x] Publication-quality figures: `results/charts/*.png`.
-- [x] Rubric compliance matrix: `submission/rubric_compliance.md` (15/15 Marks).
+### Step C1: Decoding Strategies & Sampling (`max_new_tokens=150`)
+| Strategy | Config | Avg Latency (s) | Avg Throughput (tok/s) |
+| :--- | :--- | :---: | :---: |
+| **Greedy Decoding** | `do_sample=False` | **5.54** | **27.10** |
+| **Beam Search** | `num_beams=4` | 14.80 | 10.13 |
+| **Top-K Sampling** | `top_k=50` | 9.36 | 16.03 |
+| **Top-P (Nucleus)** | `top_p=0.90` | 8.83 | 16.99 |
+| **Temperature 0.2** | `temperature=0.2` | 8.80 | 17.04 |
+| **Temperature 0.7** | `temperature=0.7` | 8.66 | 17.32 |
+| **Temperature 1.0** | `temperature=1.0` | 12.39 | 12.10 |
+
+**Production Choice (~100-Word Analysis):** **Greedy Decoding** (with `Temperature=0.2` as a secondary option) is recommended for enterprise IT incident triage. Greedy Decoding achieved the highest throughput (**27.10 tok/s**, **2.67× faster** than Beam Search at 10.13 tok/s) and guarantees deterministic, repeatable Linux/AWS commands without the stochastic command-flag drift observed at `T=1.0` (12.10 tok/s).
+
+### Step C2: Speculative Decoding (`Qwen2.5-1.5B` Target + `Qwen2.5-0.5B` Draft)
+Both models co-resided comfortably in 24 GB Apple Unified Memory (~4.1 GB combined in `bfloat16`).
+- **Prompt 1:** Standard 27.01 tok/s vs. Speculative 20.36 tok/s (**-24.6%**, 82/150 common prefix)
+- **Prompt 2:** Standard 24.23 tok/s vs. Speculative 23.71 tok/s (**-2.1%**, 65/150 common prefix)
+- **Prompt 3:** Standard 24.57 tok/s vs. Speculative 25.99 tok/s (**+5.8%**, 15/150 common prefix)
+- **Average:** **-7.0%** (25.27 → 23.35 tok/s). On Apple MPS with a narrow 3× target-to-draft parameter ratio (1.5B vs 0.5B), Python assisted-generation orchestration and Metal kernel dispatch overhead offset batched verification gains on short 150-token runs; positive speedups appear when target/draft ratio is ≥7–10× or on CUDA with fused verification kernels. Minor downstream prefix drift stems from `bfloat16` floating-point non-associativity between single-token and batched-verification matmuls.
+
+### Step C3: 4-bit Quantization & Production Economics (10 Prompts, Greedy)
+Formula: `Cost / 1M tokens = (1,000,000 / throughput_tok_s) / 3600 × hourly_rate` (`T4 = ₹3.50/hr`, `A100 = ₹12.00/hr`).
+
+| Configuration | Measured? | Peak Memory | Throughput | Cost / 1M (T4) | Cost / 1M (A100) |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **bfloat16 (Part A baseline)** | Yes (`mps`) | **2.90 GB** | **27.42 tok/s** | **₹35.46** | **₹121.57** |
+| **4-bit NF4 quantized** | Pending CUDA (Colab T4) | N/A on MPS | N/A on MPS | N/A on MPS | N/A on MPS |
+| **4-bit + Speculative Decoding** | Pending CUDA (Colab T4) | N/A on MPS | N/A on MPS | N/A on MPS | N/A on MPS |
+
+*Hardware Boundary Note:* In strict compliance with academic integrity rules (zero fabricated/projected benchmarks), CUDA-only `bitsandbytes` 4-bit NF4 measurements are not substituted with synthetic multipliers on Apple MPS. Running `notebooks/assignment_1B_colab_t4.ipynb` on a free Google Colab T4 populates all 3 empirical rows plus the Optional Extension (Fine-tuned Adapter + 4-bit NF4 + Speculative) directly.

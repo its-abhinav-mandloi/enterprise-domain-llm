@@ -1,18 +1,18 @@
 # Part C Step 3: 4-bit Quantization & Production Economics
 
 - **Base Model**: `Qwen/Qwen2.5-1.5B-Instruct`
-- **Prompts Evaluated**: 10 Enterprise Domain Queries
+- **Prompts Evaluated**: 10 Enterprise Domain Queries (Greedy Decoding, `max_new_tokens=150`)
 - **Hourly Rates**: T4 = ₹3.50/hr | A100 = ₹12.00/hr
+- **Formula**: `Cost / 1M tokens = (1,000,000 / throughput_tok_s) / 3600 * hourly_rate`
 
-## Production Comparison Table (Assignment 1B Rubric)
+## Production Comparison Table (Empirical Measurements)
 
-| Configuration | Peak VRAM (GB) | Throughput (tok/s) | Cost / 1M tokens (T4 - ₹) | Cost / 1M tokens (A100 - ₹) |
-| :--- | :---: | :---: | :---: | :---: |
-| **bfloat16 (Part A baseline)** | 2.9 GB | 23.22 | ₹41.87 | ₹143.55 |
-| **4-bit NF4 quantized** | 1.22 GB | 31.35 | ₹31.01 | ₹106.33 |
-| **4-bit + Speculative Decoding (Step 2)** | 1.57 GB | 41.38 | ₹23.49 | ₹80.55 |
+| Configuration | Measured? | Peak VRAM (GB) | Throughput (tok/s) | Cost / 1M (T4 - ₹) | Cost / 1M (A100 - ₹) |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **bfloat16 (Part A baseline)** | Yes (`mps`) | 2.9 GB | 27.42 | ₹35.46 | ₹121.57 |
+| **4-bit NF4 quantized** | Pending CUDA (Colab T4) | N/A on MPS | N/A on MPS | N/A on MPS | N/A on MPS |
+| **4-bit + Speculative Decoding (Step 2)** | Pending CUDA (Colab T4) | N/A on MPS | N/A on MPS | N/A on MPS | N/A on MPS |
 
 ## Production Deployment Recommendation
 
-> We recommend deploying the **4-bit NF4 + Speculative Decoding** configuration on an NVIDIA T4 GPU instance for production enterprise IT helpdesk operations. This architecture achieves the lowest serving cost of ₹23.49 per 1 million tokens while consuming only 1.57 GB of VRAM (well within the T4's 16 GB boundary). Because speculative verification guarantees mathematical equivalence to the target model's greedy output, this setup delivers maximum generation throughput without compromising technical troubleshooting accuracy or command fidelity.
-
+On local Apple Silicon M4 MPS, the empirically measured `bfloat16` baseline achieved **27.42 tok/s** at **2.9 GB** memory (**₹35.46/1M tokens** at T4 rate; **₹121.57/1M tokens** at A100 rate). Because `bitsandbytes` 4-bit NF4 kernels require NVIDIA CUDA, 4-bit NF4 and 4-bit + Speculative rows are not fabricated locally and are prepared for one-click empirical execution in `notebooks/assignment_1B_colab_t4.ipynb` on a free Google Colab T4 GPU.

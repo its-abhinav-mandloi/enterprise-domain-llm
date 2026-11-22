@@ -4,81 +4,189 @@
     "Technical Correctness & Accuracy",
     "Domain Terminology Usage",
     "Completeness & Actionability",
-    "Instruction Following & Grounding",
-    "Hallucination Reduction",
-    "Answer Consistency"
+    "Instruction Following & Formatting",
+    "Hallucination & Regression Audit"
   ],
   "comparisons": [
     {
       "prompt_id": "prompt_1",
       "category": "linux_storage",
+      "focus_area": "NTFS Mount Troubleshooting on Ubuntu Server",
       "prompt": "How do I troubleshoot an Ubuntu server that cannot mount an NTFS drive?",
       "baseline": {
         "text": "To troubleshoot a problem with mounting an NTFS drive on an Ubuntu server, you can follow these steps:\n\n1. **Check the Filesystem Type**: First, verify if the filesystem type of the NTFS drive is indeed NTFS by using `lsblk` or `fdisk -l`. For example:\n   ```bash\n   lsblk -f /dev/sdX\n   ```\n   Or for `/dev/nvme0n1p2` (assuming it's an NVMe drive):\n   ```bash\n   fdisk -l /dev/nvme0n1p2\n   ```\n\n2. **Mount the Drive Manually**: Try to manually mount the drive to see if there are any errors during the",
         "latency_sec": 7.581,
         "tokens": 150,
-        "tok_per_sec": 19.79
+        "tok_per_sec": 19.79,
+        "metrics": {
+          "word_count": 82,
+          "numbered_steps": 0,
+          "code_blocks": 2,
+          "inline_commands": [
+            "lsblk",
+            "fdisk -l",
+            "/dev/nvme0n1p2"
+          ],
+          "matched_domain_terms": [
+            "fdisk",
+            "lsblk",
+            "mount"
+          ],
+          "domain_term_count": 3,
+          "accuracy_notes": []
+        }
       },
       "adapter": {
-        "text": "To troubleshoot an Ubuntu server that is unable to mount an NTFS drive, follow these steps:\n\n1. **Check the File System**: First, check if the file system on the NTFS drive is healthy and not corrupted.\n\n   ```bash\n   sudo fsck /dev/sdXn\n   ```\n\n   Replace `/dev/sdXn` with the actual device name of your NTFS drive (e.g., `/dev/sdb1`). If you're unsure about the device name, use `lsblk` or `fdisk -l` to find it.\n\n2. **Mount the Drive Temporarily**:\n   \n   If the above command returns no errors, try mounting the drive temporarily using `mount`.\n\n   ```bash",
-        "latency_sec": 8.893,
+        "text": "The following steps can help you to identify the cause of the problem and resolve it: 1. Check if the NTFS file system is supported on your Linux kernel version. If not, update your kernel or use another Linux distribution that supports this file system. 2. Check if the NTFS file system is mounted in read-only mode. To check this, run the command mount | grep ntfs. If the output shows that the NTFS file system is mounted in read-only mode, change its mount options to rw using the chattr +r /mnt/ntfs command. 3. Check if there is any error message when trying to mount the NTFS file system. If so, try to find out what kind of error occurred",
+        "latency_sec": 5.937,
         "tokens": 150,
-        "tok_per_sec": 16.87
+        "tok_per_sec": 25.27,
+        "metrics": {
+          "word_count": 120,
+          "numbered_steps": 3,
+          "code_blocks": 0,
+          "inline_commands": [],
+          "matched_domain_terms": [
+            "kernel",
+            "mount"
+          ],
+          "domain_term_count": 2,
+          "accuracy_notes": [
+            "Minor command hallucination: suggests `chattr` for NTFS mount options instead of `mount -o remount,rw` / `ntfs-3g`"
+          ]
+        }
       },
-      "focus_area": "NTFS mount on Ubuntu Server",
-      "comparative_analysis": "Adapter model directly prescribes exact Linux commands (`sudo apt-get install ntfs-3g`, `lsblk`, `mount -t ntfs-3g`), properly identifying read-write driver requirements. Baseline gives generic advice and includes excessive preamble without direct incident troubleshooting focus.",
+      "comparative_analysis": "Across the 150-token response window, the baseline referenced 3 domain terms (fdisk, lsblk, mount) across 0 steps, while the fine-tuned adapter referenced 2 domain terms (kernel, mount) across 3 steps. Notably, the adapter surfaced kernel. Conversely, the baseline covered fdisk, lsblk earlier in its response. Quality check note: Minor command hallucination: suggests `chattr` for NTFS mount options instead of `mount -o remount,rw` / `ntfs-3g`. Because `Qwen2.5-1.5B-Instruct` is already instruction-tuned, compact domain adaptation shifts phrasing and prioritization toward corpus documentation style while preserving base fluency; unmerged LoRA layers incur a measurable inference latency penalty until merged with `merge_and_unload()`.",
       "key_improvements": [
-        "Command grounding (ntfs-3g, /etc/fstab, UUID detection)",
-        "No conversational fluff; concise helpdesk ticket resolution steps",
-        "Factual correctness regarding Linux kernel NTFS limitations"
+        "Adapter introduced domain terms not in baseline: `kernel`",
+        "Higher step coverage within the 150-token budget (3 numbered steps vs 0 in baseline)"
+      ],
+      "limitations_and_tradeoffs": [
+        "Baseline included terms omitted by adapter within 150 tokens: `fdisk, lsblk`",
+        "Technical accuracy caveat in adapter output: Minor command hallucination: suggests `chattr` for NTFS mount options instead of `mount -o remount,rw` / `ntfs-3g`"
       ]
     },
     {
       "prompt_id": "prompt_2",
       "category": "linux_performance",
+      "focus_area": "High Disk I/O & CPU Diagnosis on Linux",
       "prompt": "How do I investigate high disk I/O and CPU usage on a Linux production server?",
       "baseline": {
         "text": "To investigate high disk I/O and CPU usage on a Linux production server, you can follow these steps:\n\n1. **Check Disk I/O Statistics:**\n   Use the `iostat` command to monitor disk I/O performance.\n   ```bash\n   iostat -x 1\n   ```\n   This will provide detailed statistics about disk activity over one interval.\n\n2. **Check CPU Usage:**\n   Use the `top`, `htop`, or `vmstat` commands to check CPU usage.\n   ```bash\n   top\n   htop\n   vmstat 1\n   ```\n\n3. **Analyze System Load:**\n   Check system load using `uptime` or `systemd-analyze`.\n   ```",
         "latency_sec": 5.619,
         "tokens": 150,
-        "tok_per_sec": 26.69
+        "tok_per_sec": 26.69,
+        "metrics": {
+          "word_count": 81,
+          "numbered_steps": 0,
+          "code_blocks": 2,
+          "inline_commands": [
+            "iostat",
+            "top",
+            "htop",
+            "vmstat",
+            "uptime",
+            "systemd-analyze"
+          ],
+          "matched_domain_terms": [
+            "htop",
+            "iostat",
+            "top",
+            "uptime",
+            "vmstat"
+          ],
+          "domain_term_count": 5,
+          "accuracy_notes": []
+        }
       },
       "adapter": {
-        "text": "To investigate high disk I/O and CPU usage on a Linux production server, you can follow these steps:\n\n1. **Check Disk I/O Statistics:**\n   Use the `iostat` command to monitor disk I/O performance.\n   ```bash\n   iostat -x 1\n   ```\n   This will show detailed statistics for each device.\n\n2. **Check CPU Usage:**\n   Use the `top`, `htop`, or `vmstat` commands to check CPU usage.\n   ```bash\n   top\n   htop\n   vmstat 1\n   ```\n\n3. **Analyze System Load:**\n   Check system load using `uptime` or `dstat`.\n   ```bash\n   uptime",
-        "latency_sec": 11.056,
+        "text": "The following steps can be used to identify the cause of high disk I/O and CPU usage: 1. Check the system load average using the top command or the uptime command. If the load is greater than 2, it indicates that there may be a problem with the disk or CPU. 2. Use the iostat command to check the current disk activity. The output will show you how many times each device has been read or written in the last minute. This information can help you determine if the disk is being accessed too frequently. 3. Use the vmstat command to check the current memory usage. The output will show you how much memory is currently available for use. If the amount of free memory is low, it could",
+        "latency_sec": 6.423,
         "tokens": 150,
-        "tok_per_sec": 13.57
+        "tok_per_sec": 23.35,
+        "metrics": {
+          "word_count": 129,
+          "numbered_steps": 3,
+          "code_blocks": 0,
+          "inline_commands": [],
+          "matched_domain_terms": [
+            "iostat",
+            "top",
+            "uptime",
+            "vmstat"
+          ],
+          "domain_term_count": 4,
+          "accuracy_notes": []
+        }
       },
-      "focus_area": "High disk I/O & CPU diagnosis",
-      "comparative_analysis": "Adapter structures diagnosis methodically using standard enterprise sysadmin diagnostics: CPU inspection (`top`, `htop`, `pidstat`), I/O bottlenecks (`iostat -xz 1 5`, `iotop -o`), and load average analysis. Domain terminology is precise and execution-ready.",
+      "comparative_analysis": "Across the 150-token response window, the baseline referenced 5 domain terms (htop, iostat, top, uptime, vmstat) across 0 steps, while the fine-tuned adapter referenced 4 domain terms (iostat, top, uptime, vmstat) across 3 steps. Conversely, the baseline covered htop earlier in its response. Because `Qwen2.5-1.5B-Instruct` is already instruction-tuned, compact domain adaptation shifts phrasing and prioritization toward corpus documentation style while preserving base fluency; unmerged LoRA layers incur a measurable inference latency penalty until merged with `merge_and_unload()`.",
       "key_improvements": [
-        "Structured operational triage methodology",
-        "Explicit diagnostic tool parameters (-xz flags for iostat)",
-        "Actionable remediation triage for on-call engineers"
+        "Higher step coverage within the 150-token budget (3 numbered steps vs 0 in baseline)"
+      ],
+      "limitations_and_tradeoffs": [
+        "Baseline included terms omitted by adapter within 150 tokens: `htop`",
+        "Unmerged LoRA adapter adds runtime dispatch overhead (23.35 tok/s vs 26.69 tok/s baseline, -12.5%); merging weights (`merge_and_unload()`) eliminates this in production"
       ]
     },
     {
       "prompt_id": "prompt_3",
       "category": "cloud_networking",
+      "focus_area": "AWS EC2 Connectivity & SSH Access Triage",
       "prompt": "How do I troubleshoot AWS EC2 instance connectivity and SSH access issues?",
       "baseline": {
         "text": "Troubleshooting AWS EC2 instance connectivity and SSH access issues involves several steps. Here are some common methods to diagnose and resolve such problems:\n\n### 1. **Check Instance Status**\n   - Ensure your EC2 instance is running by checking the status in the Amazon Management Console or using the `aws ec2 describe-instances` command.\n     ```bash\n     aws ec2 describe-instances --instance-ids <INSTANCE_ID>\n     ```\n\n### 2. **Verify Network Connectivity**\n   - Use `ping` or `traceroute` to check if you can reach the internet from your EC2 instance.\n     ```bash\n     ping example.com\n     traceroute example.com\n     ```\n   - If you cannot reach the internet,",
         "latency_sec": 5.635,
         "tokens": 150,
-        "tok_per_sec": 26.62
+        "tok_per_sec": 26.62,
+        "metrics": {
+          "word_count": 93,
+          "numbered_steps": 0,
+          "code_blocks": 2,
+          "inline_commands": [
+            "aws ec2 describe-instances",
+            "ping",
+            "traceroute"
+          ],
+          "matched_domain_terms": [
+            "aws",
+            "ec2",
+            "ping",
+            "ssh",
+            "traceroute"
+          ],
+          "domain_term_count": 5,
+          "accuracy_notes": []
+        }
       },
       "adapter": {
-        "text": "Troubleshooting AWS EC2 instance connectivity and SSH access issues can be done through several steps:\n\n1. Check the status of your EC2 instance: Use the Amazon Management Console or AWS CLI to check the status of your EC2 instance. If it is not running, you may need to start it.\n\n2. Verify network connectivity: Ensure that there is no firewall rule blocking traffic on port 22 (SSH) or any other ports required for your application. You can use tools like `ping` or `traceroute` to test network connectivity.\n\n3. Check security groups: Make sure that the security group associated with your EC2 instance allows incoming traffic on port 22. You can modify the security group rules using the AWS Management Console",
-        "latency_sec": 9.215,
+        "text": "The following steps can help you diagnose the issue: 1. Check if your network is reachable from outside of Amazon VPC. If not, check your internet connection or contact your Internet Service Provider (ISP). 2. Verify that your security group rules allow inbound traffic on port 22 for the IP address of the EC2 instance. 3. Use the command \"ping\" to test whether the EC2 instance can reach the public DNS name of the VPC endpoint. If it cannot be reached, then there may be an issue with the VPC endpoint configuration. 4. Use the command \"ping\" to test whether the EC2 instance can reach the private DNS name of the VPC endpoint. If it cannot be reached,",
+        "latency_sec": 6.157,
         "tokens": 150,
-        "tok_per_sec": 16.28
+        "tok_per_sec": 24.36,
+        "metrics": {
+          "word_count": 118,
+          "numbered_steps": 4,
+          "code_blocks": 0,
+          "inline_commands": [],
+          "matched_domain_terms": [
+            "ec2",
+            "ping",
+            "port 22",
+            "security group",
+            "vpc"
+          ],
+          "domain_term_count": 5,
+          "accuracy_notes": []
+        }
       },
-      "focus_area": "AWS EC2 connectivity and SSH access",
-      "comparative_analysis": "Adapter accurately isolates the primary failure domains: Security Group ingress (Port 22), VPC Internet Gateway / Route Tables, Instance State Checks (1/2 vs 2/2), Network ACLs, and Key Pair permission hygiene (`chmod 400`). Baseline missed VPC routing verification.",
+      "comparative_analysis": "Across the 150-token response window, the baseline referenced 5 domain terms (aws, ec2, ping, ssh, traceroute) across 0 steps, while the fine-tuned adapter referenced 5 domain terms (ec2, ping, port 22, security group, vpc) across 4 steps. Notably, the adapter surfaced port 22, security group, vpc. Conversely, the baseline covered aws, ssh, traceroute earlier in its response. Because `Qwen2.5-1.5B-Instruct` is already instruction-tuned, compact domain adaptation shifts phrasing and prioritization toward corpus documentation style while preserving base fluency; unmerged LoRA layers incur a measurable inference latency penalty until merged with `merge_and_unload()`.",
       "key_improvements": [
-        "Enterprise AWS troubleshooting hierarchy (SG -> Route Table -> IGW -> OS sshd)",
-        "Exact chmod 400 keypair file permission guidance",
-        "Verification via AWS Management Console / AWS CLI commands"
+        "Adapter introduced domain terms not in baseline: `port 22, security group, vpc`",
+        "Higher step coverage within the 150-token budget (4 numbered steps vs 0 in baseline)"
+      ],
+      "limitations_and_tradeoffs": [
+        "Baseline included terms omitted by adapter within 150 tokens: `aws, ssh, traceroute`",
+        "Unmerged LoRA adapter adds runtime dispatch overhead (24.36 tok/s vs 26.62 tok/s baseline, -8.5%); merging weights (`merge_and_unload()`) eliminates this in production"
       ]
     }
   ]
