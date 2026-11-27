@@ -217,6 +217,7 @@ def generate_comparative_analysis(
     with open(md_path, "w", encoding="utf-8") as f:
         f.write("# Part B3 — Comparative Analysis: Baseline vs Fine-Tuned LoRA Adapter\n\n")
         f.write("All findings below are computed directly from the generated baseline and adapter outputs.\n\n")
+        f.write("> **Methodology Note:** Per Part A2 requirements, the pre-adaptation baseline was evaluated on raw prompts with **no system prompt**. Per Part B2/B3 SFT alignment, the fine-tuned adapter was evaluated using Qwen2.5's chat template (`apply_chat_template`, which inserts Qwen's default assistant framing). Observed stylistic differences reflect both domain fine-tuning and chat-template framing.\n\n")
 
         for item in comparison_items:
             bm = item["baseline"]["metrics"]

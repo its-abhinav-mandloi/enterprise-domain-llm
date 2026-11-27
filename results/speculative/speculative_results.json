@@ -9,9 +9,11 @@
     "average_spec_tok_s": 23.35,
     "average_speedup_pct": -7.0,
     "exact_sequence_matches": 0,
-    "average_common_prefix_tokens": 54.0
+    "average_common_prefix_tokens": 54.0,
+    "acceptance_rate_measured": false,
+    "acceptance_rate_note": "Not exposed by default by transformers.generate(assistant_model=...)."
   },
-  "observations": "On `mps` (`torch.bfloat16`), speculative decoding measured **-7.0%** throughput change (25.27 \u2192 23.35 tok/s). For a compact 1.5B target model with only a 3\u00d7 parameter ratio against the 0.5B draft model, Python-level Hugging Face assisted-generation orchestration and per-step kernel launch overhead on `mps` outweigh the memory-bandwidth savings of batched target verification. Speculative decoding yields its largest speedups when the target-to-draft ratio is \u22657\u201310\u00d7 (e.g., 7B/14B target with 0.5B draft) or on CUDA with fused verification kernels. Output verification showed 0/3 exact full-sequence matches with an average identical prefix of 54.0 tokens; minor downstream token divergences arise from reduced-precision (`torch.bfloat16`) floating-point non-associativity between single-token decoding and multi-token batched verification passes, while technical correctness and troubleshooting quality remained equivalent.",
+  "observations": "On `mps` (`torch.bfloat16`), speculative decoding measured **-7.0%** throughput change (25.27 -> 23.35 tok/s). For a compact 1.5B target model with only a 3x parameter ratio against the 0.5B draft model, Python-level Hugging Face assisted-generation orchestration and per-step Metal kernel launch overhead on `mps` outweigh batched target verification savings. Output comparison showed 0/3 exact full-sequence matches with an average identical prefix of 54.0 tokens; downstream divergences reflect `torch.bfloat16` floating-point non-associativity between single-token decoding and batched verification passes (alongside default logits-processor interaction), while both runs produced relevant troubleshooting steps upon inspection. Per-step draft acceptance rate is not exposed directly by `transformers.generate()` and is unmeasured.",
   "runs": [
     {
       "prompt_id": "prompt_1",

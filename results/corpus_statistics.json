@@ -54,7 +54,9 @@
       "status": "included"
     }
   ],
-  "instruction_pairs_total": 720,
-  "instruction_pairs_train": 576,
-  "instruction_pairs_eval": 144
+  "instruction_pairs_total": 581,
+  "instruction_pairs_train": 465,
+  "instruction_pairs_eval": 116,
+  "final_corpus_chars_on_disk_with_separators": 18058435,
+  "cleaning_methodology_notes": "Length filter removes pages < 100 chars. Near-dedup checks 5-gram Jaccard on 5,000-char doc prefixes alongside SHA-256 exact page dedup. Language filter runs langdetect on first 5 pages for large manuals (>200 pages) and page-by-page otherwise."
 }

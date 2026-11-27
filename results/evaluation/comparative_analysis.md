@@ -2,6 +2,8 @@
 
 All findings below are computed directly from the generated baseline and adapter outputs.
 
+> **Methodology Note:** Per Part A2 requirements, the pre-adaptation baseline was evaluated on raw prompts with **no system prompt**. Per Part B2/B3 SFT alignment, the fine-tuned adapter was evaluated using Qwen2.5's chat template (`apply_chat_template`, which inserts Qwen's default assistant framing). Observed stylistic differences reflect both domain fine-tuning and chat-template framing.
+
 ## PROMPT_1: NTFS Mount Troubleshooting on Ubuntu Server
 
 **Prompt:** *"How do I troubleshoot an Ubuntu server that cannot mount an NTFS drive?"*

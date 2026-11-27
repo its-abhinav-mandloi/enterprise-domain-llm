@@ -5,11 +5,11 @@
 
 # NOTE: 4-bit quantization (NF4) is NOT supported on Apple M4 MPS.
 # bitsandbytes is installed but 4-bit ops require CUDA.
-# On macOS: use lora_only=true which skips quantization (full BF16 weights).
-# For full QLoRA (4-bit NF4): run on Google Colab with T4/A100 GPU.
+# On macOS: src/training/qlora_trainer.py runs native bfloat16 LoRA on MPS.
+# On CUDA (Google Colab T4): true 4-bit NF4 QLoRA is enabled automatically.
 
 lora:
-  r: 16                        # LoRA rank
+  r: 16                        # LoRA rank (Adapter B)
   lora_alpha: 32               # Scaling factor (alpha/r = 2.0)
   target_modules:
     - "q_proj"
@@ -19,34 +19,30 @@ lora:
   task_type: "CAUSAL_LM"
 
 quantization:
-  # Set use_4bit: false on MPS (not supported); true only on CUDA
-  use_4bit: false              # Override to true only on CUDA
+  # Auto-enabled on CUDA; unsupported on Apple MPS
+  use_4bit: true               # Effective on CUDA only (see qlora_trainer.py)
   bnb_4bit_quant_type: "nf4"
   bnb_4bit_compute_dtype: "bfloat16"
   bnb_4bit_use_double_quant: true
 
 training:
   output_dir: "models/lora_adapter"
-  num_train_epochs: 3
-  per_device_train_batch_size: 2
+  num_train_epochs: 2
+  per_device_train_batch_size: 4
   gradient_accumulation_steps: 4
   learning_rate: 2.0e-4
-  warmup_ratio: 0.03
+  warmup_steps: 5
   lr_scheduler_type: "cosine"
-  weight_decay: 0.001
-  max_grad_norm: 0.3
-  fp16: false
-  bf16: true                   # BF16 on MPS
-  logging_steps: 10
-  save_steps: 100
-  save_total_limit: 2
-  evaluation_strategy: "steps"
-  eval_steps: 100
-  load_best_model_at_end: true
-  report_to: "none"            # or "wandb" if WANDB_API_KEY set
+  weight_decay: 0.01
+  bf16: true                   # Native BF16 on MPS / Ampere+; FP16 on T4 CUDA
+  logging_steps: 5
+  eval_strategy: "epoch"
+  save_strategy: "epoch"
+  save_total_limit: 1
+  report_to: "none"
   dataloader_num_workers: 0    # 0 for macOS MPS stability
 
 sft:
-  max_seq_length: 512
+  max_length: 384
   packing: false
   dataset_text_field: "text"

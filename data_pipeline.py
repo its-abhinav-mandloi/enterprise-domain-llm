@@ -19,14 +19,14 @@ warnings.filterwarnings("ignore")
 import fitz  # pymupdf
 from langdetect import detect, LangDetectException
 
-# ── Paths ────────────────────────────────────────────────────────────────────
-BASE = Path("/Users/abhinavmandloi/Documents/Sem3Projects/LLM Assingment 1/enterprise-domain-llm")
+# ── Paths (portable relative to repository root) ─────────────────────────────
+BASE = Path(__file__).resolve().parent
 RAW_PDF_DIR = BASE / "data" / "raw_pdfs"
 EXTRACTED_DIR = BASE / "data" / "extracted_text"
 CORPUS_DIR = BASE / "data" / "domain_corpus"
 RESULTS_DIR = BASE / "results"
 
-for d in [EXTRACTED_DIR, CORPUS_DIR, RESULTS_DIR]:
+for d in [RAW_PDF_DIR, EXTRACTED_DIR, CORPUS_DIR, RESULTS_DIR]:
     d.mkdir(parents=True, exist_ok=True)
 
 # ── PDF METADATA ─────────────────────────────────────────────────────────────
@@ -65,8 +65,22 @@ def extract_pdf(pdf_path: Path, out_dir: Path) -> Dict:
     }
 
 print("=" * 60)
-print("STEP 1: EXTRACTING TEXT FROM PDFs")
+print("STEP 1: DOWNLOADING (IF MISSING) & EXTRACTING TEXT FROM PDFs")
 print("=" * 60)
+
+def ensure_pdfs_downloaded(pdf_sources: Dict[str, str], dest_dir: Path) -> None:
+    """Download any missing source PDFs from their official URLs for fresh-clone reproducibility."""
+    import urllib.request
+    for pdf_name, url in pdf_sources.items():
+        pdf_path = dest_dir / pdf_name
+        if not pdf_path.exists():
+            print(f"  Downloading {pdf_name} from {url} ...")
+            try:
+                urllib.request.urlretrieve(url, str(pdf_path))
+            except Exception as exc:
+                print(f"  WARNING: Failed to download {pdf_name}: {exc}")
+
+ensure_pdfs_downloaded(PDF_SOURCES, RAW_PDF_DIR)
 
 extraction_results = []
 for pdf_name in PDF_SOURCES:

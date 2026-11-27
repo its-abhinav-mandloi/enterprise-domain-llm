@@ -7,7 +7,7 @@
 | **Hugging Face Model ID** | `Qwen/Qwen2.5-1.5B-Instruct` | `Qwen/Qwen2.5-0.5B-Instruct` |
 | **Developer / Family** | Alibaba Cloud / Qwen 2.5 Open Model Family | Alibaba Cloud / Qwen 2.5 Open Model Family |
 | **Model Type** | Causal Language Model (Decoder-Only Transformer) | Causal Language Model (Decoder-Only Transformer) |
-| **Total Parameter Count** | **1,543,714,816** (~1.54 Billion) | **494,032,768** (~0.49 Billion) |
+| **Total Parameter Count** | **1,543,714,304** (~1.54 Billion) | **494,032,768** (~0.49 Billion) |
 | **Active Parameters** | 1.54B (Dense architecture) | 0.49B (Dense architecture) |
 | **Hidden Dimension ($d_{\text{model}}$)** | **1,536** | **896** |
 | **Intermediate Size ($d_{\text{ffn}}$)** | **8,960** (SwiGLU activation) | **4,864** (SwiGLU activation) |

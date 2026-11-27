@@ -5,7 +5,7 @@
     "precision": "torch.bfloat16",
     "max_new_tokens": 150
   },
-  "deployment_analysis": "For an enterprise IT Helpdesk & Incident Resolution Assistant (V5), the optimal production strategy is Greedy Decoding or conservative Temperature Scaling (T=0.2). IT incident triage requires deterministic, verifiable commands (e.g., `mount -t ntfs-3g`, `iostat -xz 1 5`, `chmod 400`) where consistency and factual accuracy take absolute precedence over linguistic novelty. In our benchmark, Greedy Decoding delivered the lowest latency and highest throughput without sampling variance, eliminating hallucinated CLI flags. In contrast, Beam Search introduced a ~3.2x latency penalty unsuitable for real-time SLA response, while high temperatures (T=1.0) occasionally generated non-existent subcommands and disorganized parameter recommendations.",
+  "deployment_analysis": "For an enterprise IT Helpdesk & Incident Resolution Assistant (V5), Greedy Decoding (or low Temperature T=0.2) is the optimal production choice. Across all three prompts, Greedy Decoding achieved the highest mean throughput (19.86 tok/s, 8.01s avg latency) and deterministic commands (`lsblk -f`, `fdisk -l`, `iostat -x 1`, `aws ec2 describe-instances`). By contrast, Beam Search (k=4) slowed generation to 10.89 tok/s (13.84s, ~1.73x latency) with no gain in actionable CLI depth. High-entropy sampling introduced factual errors, such as Top-K suggesting `vfat` in `/etc/fstab` for an NTFS volume and T=1.0 (17.09 tok/s) hallucinating `blkid` kernel checks and forum-style prose.",
   "results": [
     {
       "prompt_id": "prompt_1",
@@ -483,5 +483,35 @@
         "text_snippet": "When troubleshooting your Amazon Elastic Compute Cloud (EC2) infrastructure, you may encounter a variety of problems tha..."
       }
     }
-  ]
+  ],
+  "summary_averages": {
+    "greedy": {
+      "avg_tok_per_sec": 19.86,
+      "avg_time_sec": 8.01
+    },
+    "beam_search": {
+      "avg_tok_per_sec": 10.89,
+      "avg_time_sec": 13.84
+    },
+    "top_k": {
+      "avg_tok_per_sec": 15.24,
+      "avg_time_sec": 10.02
+    },
+    "top_p": {
+      "avg_tok_per_sec": 18.27,
+      "avg_time_sec": 8.34
+    },
+    "temp_0_2": {
+      "avg_tok_per_sec": 18.21,
+      "avg_time_sec": 8.31
+    },
+    "temp_0_7": {
+      "avg_tok_per_sec": 18.87,
+      "avg_time_sec": 8.05
+    },
+    "temp_1_0": {
+      "avg_tok_per_sec": 17.09,
+      "avg_time_sec": 9.33
+    }
+  }
 }

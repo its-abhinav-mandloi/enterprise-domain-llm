@@ -7796,23 +7796,52 @@ a.anchor-link {
 <!-- End of mermaid configuration --></head>
 <body class="jp-Notebook" data-jp-theme-light="true" data-jp-theme-name="JupyterLab Light">
 <main>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=cell-00">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=m-00">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h1 id="Assignment-1B-%E2%80%94-Domain-LLM-Adaptation-&amp;-Production-Optimization">Assignment 1B — Domain LLM Adaptation &amp; Production Optimization<a class="anchor-link" href="#Assignment-1B-%E2%80%94-Domain-LLM-Adaptation-&amp;-Production-Optimization">¶</a></h1><h2 id="Variant-V5:-Enterprise-IT-Helpdesk-&amp;-Incident-Resolution-Assistant">Variant V5: Enterprise IT Helpdesk &amp; Incident Resolution Assistant<a class="anchor-link" href="#Variant-V5:-Enterprise-IT-Helpdesk-&amp;-Incident-Resolution-Assistant">¶</a></h2><ul>
-<li><strong>Base / Target Model:</strong> <code>Qwen/Qwen2.5-1.5B-Instruct</code> (1.54B parameters, 28 layers, hidden 1536, vocab 151,936)</li>
-<li><strong>Speculative Draft Model:</strong> <code>Qwen/Qwen2.5-0.5B-Instruct</code> (0.49B parameters, shared tokenizer)</li>
-<li><strong>Adapter Configuration:</strong> Adapter B — Balanced (<code>r=16, alpha=32, target_modules=["q_proj", "v_proj"]</code>)</li>
+<h1 id="Assignment-1B-%E2%80%94-Domain-LLM-Adaptation-&amp;-Production-Optimization">Assignment 1B — Domain LLM Adaptation &amp; Production Optimization<a class="anchor-link" href="#Assignment-1B-%E2%80%94-Domain-LLM-Adaptation-&amp;-Production-Optimization">¶</a></h1><h2 id="Variant-V5:-Enterprise-IT-Helpdesk-&amp;-Incident-Resolution-Assistant">Variant V5: Enterprise IT Helpdesk &amp; Incident Resolution Assistant<a class="anchor-link" href="#Variant-V5:-Enterprise-IT-Helpdesk-&amp;-Incident-Resolution-Assistant">¶</a></h2><p><strong>BITS Pilani — Group 92</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Team Member</th>
+<th style="text-align:left">BITS Student ID</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Ravi</td>
+<td style="text-align:left"><code>2025aa05029</code></td>
+</tr>
+<tr>
+<td style="text-align:left">Pritish</td>
+<td style="text-align:left"><code>2025aa05686</code></td>
+</tr>
+<tr>
+<td style="text-align:left">Siddarth</td>
+<td style="text-align:left"><code>2025aa05446</code></td>
+</tr>
+<tr>
+<td style="text-align:left">Abhinav</td>
+<td style="text-align:left"><code>2025aa05473</code></td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<ul>
+<li><strong>Base / Target Model:</strong> <code>Qwen/Qwen2.5-1.5B-Instruct</code> (<code>1,543,714,304</code> parameters, 28 decoder layers, hidden size <code>1,536</code>, vocab <code>151,936</code>)</li>
+<li><strong>Speculative Draft Model:</strong> <code>Qwen/Qwen2.5-0.5B-Instruct</code> (<code>494,032,768</code> parameters, shared tokenizer)</li>
+<li><strong>Adapter Configuration:</strong> Adapter B — Balanced (<code>r=16, alpha=32, target_modules=["q_proj", "v_proj"], dropout=0.05</code>)</li>
 <li><strong>Domain Corpus:</strong> 6 official enterprise IT &amp; Linux administration PDFs (Ubuntu Server, AWS EC2, Red Hat Enterprise Linux 9, PostgreSQL 17, GNU Bash, GCC)</li>
+<li><strong>CUDA Colab Notebook:</strong> True 4-bit NF4 <code>bitsandbytes</code> QLoRA &amp; Part C3 benchmarks are packaged in <code>notebooks/assignment_1B_colab_t4.ipynb</code></li>
 </ul>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=cell-01">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=m-01">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7822,7 +7851,7 @@ a.anchor-link {
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=cell-02">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=c-02">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7838,17 +7867,20 @@ a.anchor-link {
 <span class="n">corpus_stats</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">((</span><span class="n">ROOT</span> <span class="o">/</span> <span class="s2">"results/corpus_statistics.json"</span><span class="p">)</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">))</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">"=== PART A1: DOMAIN CORPUS CLEANING STATISTICS ==="</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Valid PDFs Extracted:        </span><span class="si">{</span><span class="n">corpus_stats</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'total_pdfs_valid'</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Total Pages Extracted:       </span><span class="si">{</span><span class="n">corpus_stats</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'total_pages_extracted'</span><span class="p">)</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Raw Characters Extracted:    </span><span class="si">{</span><span class="n">corpus_stats</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'total_chars_before_cleaning'</span><span class="p">)</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"After Length Filter (&gt;=100): </span><span class="si">{</span><span class="n">corpus_stats</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'total_chars_after_length_filter'</span><span class="p">)</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"After Deduplication (SHA256):</span><span class="si">{</span><span class="n">corpus_stats</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'total_chars_after_dedup'</span><span class="p">)</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"After Language Filter (EN):  </span><span class="si">{</span><span class="n">corpus_stats</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'total_chars_after_language_filter'</span><span class="p">)</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Greatest Reduction Stage:    </span><span class="si">{</span><span class="n">corpus_stats</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'greatest_reduction_step'</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Valid PDFs Extracted:               </span><span class="si">{</span><span class="n">corpus_stats</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'total_pdfs_valid'</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Total Pages Extracted:              </span><span class="si">{</span><span class="n">corpus_stats</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'total_pages_extracted'</span><span class="p">)</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Raw Characters Extracted:           </span><span class="si">{</span><span class="n">corpus_stats</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'total_chars_before_cleaning'</span><span class="p">)</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"After Length Filter (&gt;=100 chars):  </span><span class="si">{</span><span class="n">corpus_stats</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'total_chars_after_length_filter'</span><span class="p">)</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"After Deduplication (SHA256+Near):  </span><span class="si">{</span><span class="n">corpus_stats</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'total_chars_after_dedup'</span><span class="p">)</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"After Language Filter (EN):         </span><span class="si">{</span><span class="n">corpus_stats</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'total_chars_after_language_filter'</span><span class="p">)</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Disk Chars (with </span><span class="se">\n\n</span><span class="s2"> separators):   </span><span class="si">{</span><span class="n">corpus_stats</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'final_corpus_chars_on_disk_with_separators'</span><span class="p">)</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Greatest Reduction Stage:           </span><span class="si">{</span><span class="n">corpus_stats</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'greatest_reduction_stage'</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Cleaning Note:                      </span><span class="si">{</span><span class="n">corpus_stats</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'cleaning_methodology_notes'</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Cleaned files in data/domain_corpus/:"</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">((</span><span class="n">ROOT</span> <span class="o">/</span> <span class="s2">"data/domain_corpus"</span><span class="p">)</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">"*_clean.txt"</span><span class="p">)):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  - </span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="si">:</span><span class="s2">35s</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_size</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">1e6</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> MB)"</span><span class="p">)</span>
+    <span class="n">txt_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">"replace"</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  - </span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="si">:</span><span class="s2">35s</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">txt_len</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2"> chars | </span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_size</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">1e6</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> MB)"</span><span class="p">)</span>
 
 <span class="n">display</span><span class="p">(</span><span class="n">Image</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">ROOT</span> <span class="o">/</span> <span class="s2">"results/charts/corpus_cleaning.png"</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">760</span><span class="p">))</span>
 </pre></div>
@@ -7864,21 +7896,25 @@ a.anchor-link {
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
 <pre>=== PART A1: DOMAIN CORPUS CLEANING STATISTICS ===
-Valid PDFs Extracted:        6
-Total Pages Extracted:       9,239
-Raw Characters Extracted:    18,232,885
-After Length Filter (&gt;=100): 18,040,053
-After Deduplication (SHA256):18,040,053
-After Language Filter (EN):  18,040,053
-Greatest Reduction Stage:    None
+Valid PDFs Extracted:               6
+Total Pages Extracted:              9,239
+Raw Characters Extracted:           18,232,885
+After Length Filter (&gt;=100 chars):  18,040,053
+After Deduplication (SHA256+Near):  18,040,053
+After Language Filter (EN):         18,040,053
+Disk Chars (with 
+
+ separators):   18,058,435
+Greatest Reduction Stage:           length_filter
+Cleaning Note:                      Length filter removes pages &lt; 100 chars. Near-dedup checks 5-gram Jaccard on 5,000-char doc prefixes alongside SHA-256 exact page dedup. Language filter runs langdetect on first 5 pages for large manuals (&gt;200 pages) and page-by-page otherwise.
 
 Cleaned files in data/domain_corpus/:
-  - aws_ec2_userguide_clean.txt         (5.93 MB)
-  - bash_manual_clean.txt               (0.56 MB)
-  - gcc_manual_clean.txt                (3.30 MB)
-  - postgresql_manual_clean.txt         (7.34 MB)
-  - redhat_sysadmin_clean.txt           (0.18 MB)
-  - ubuntu_server_guide_clean.txt       (0.86 MB)
+  - aws_ec2_userguide_clean.txt         (5,879,860 chars | 5.93 MB)
+  - bash_manual_clean.txt               (555,393 chars | 0.56 MB)
+  - gcc_manual_clean.txt                (3,281,932 chars | 3.30 MB)
+  - postgresql_manual_clean.txt         (7,325,359 chars | 7.34 MB)
+  - redhat_sysadmin_clean.txt           (181,988 chars | 0.18 MB)
+  - ubuntu_server_guide_clean.txt       (833,903 chars | 0.86 MB)
 </pre>
 </div>
 </div>
@@ -7891,18 +7927,18 @@ Cleaned files in data/domain_corpus/:
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=cell-03">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=m-03">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p><strong>Step A1 Inference:</strong> Six authoritative enterprise IT administration PDFs (9,239 pages, 18.23M raw characters) were extracted page-by-page using PyMuPDF and saved as individual cleaned <code>.txt</code> files in <code>data/domain_corpus/</code>. The <strong>length filter ($\ge 100$ characters/page)</strong> caused the largest reduction (-192,832 characters), because enterprise technical PDFs contain blank separator pages, cover pages, and sparse section-divider pages that carry no troubleshooting knowledge. Exact SHA-256 hashing and 5-gram Jaccard near-deduplication removed repeated boilerplate pages, while <code>langdetect</code> verified 100% English language compliance.</p>
+<p><strong>Step A1 Inference:</strong> Six authoritative enterprise IT administration PDFs (9,239 pages, 18,232,885 raw characters) were extracted page-by-page using PyMuPDF and saved as individual cleaned <code>.txt</code> files in <code>data/domain_corpus/</code> (<code>18,040,053</code> clean page characters; <code>18,058,435</code> characters on disk with <code>\n\n</code> page separators). The <strong>length filter ($\ge 100$ characters/page)</strong> caused the largest reduction (<code>-192,832</code> characters), removing blank separator pages, cover pages, and sparse divider pages. SHA-256 exact page deduplication, 5-gram Jaccard prefix checks (0.85 threshold), and <code>langdetect</code> sampling (first 5 pages for manuals &gt;200 pages; page-by-page otherwise) verified zero duplicates or non-English documents.</p>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=cell-04">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=m-04">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7912,7 +7948,7 @@ Cleaned files in data/domain_corpus/:
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=cell-05">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=c-05">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7921,11 +7957,17 @@ Cleaned files in data/domain_corpus/:
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">baseline</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">((</span><span class="n">ROOT</span> <span class="o">/</span> <span class="s2">"results/baseline/baseline_outputs.json"</span><span class="p">)</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">))</span>
-<span class="n">arch</span> <span class="o">=</span> <span class="n">baseline</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"architecture"</span><span class="p">,</span> <span class="p">{})</span>
+<span class="n">meta</span> <span class="o">=</span> <span class="n">baseline</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"metadata"</span><span class="p">,</span> <span class="p">{})</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">"=== MODEL ARCHITECTURE REPORT ==="</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">arch</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">k</span><span class="si">:</span><span class="s2">28s</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"=== MODEL ARCHITECTURE REPORT (PART A2) ==="</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Model Identifier:     </span><span class="si">{</span><span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'model_identifier'</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Total Parameter Count:</span><span class="si">{</span><span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'parameter_count'</span><span class="p">)</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'parameter_count_formatted'</span><span class="p">)</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Decoder Layers:       </span><span class="si">{</span><span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'num_decoder_layers'</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Hidden Size:          </span><span class="si">{</span><span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'hidden_size'</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Vocabulary Size:      </span><span class="si">{</span><span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'vocab_size'</span><span class="p">)</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Tokenizer:            </span><span class="si">{</span><span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'tokenizer'</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Device / Precision:   </span><span class="si">{</span><span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'device'</span><span class="p">)</span><span class="si">}</span><span class="s2"> / </span><span class="si">{</span><span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'precision'</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Generation Settings:  </span><span class="si">{</span><span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'generation_settings'</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">=== PRE-ADAPTATION BASELINE OUTPUTS (bfloat16, NO SYSTEM PROMPT) ==="</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">baseline</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"baseline_runs"</span><span class="p">,</span> <span class="p">[]):</span>
@@ -7944,7 +7986,15 @@ Cleaned files in data/domain_corpus/:
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>=== MODEL ARCHITECTURE REPORT ===
+<pre>=== MODEL ARCHITECTURE REPORT (PART A2) ===
+  Model Identifier:     Qwen/Qwen2.5-1.5B-Instruct
+  Total Parameter Count:1,543,714,304 (1.54B)
+  Decoder Layers:       28
+  Hidden Size:          1536
+  Vocabulary Size:      151,936
+  Tokenizer:            Qwen2Tokenizer
+  Device / Precision:   mps / torch.bfloat16
+  Generation Settings:  {'max_new_tokens': 150, 'do_sample': False, 'system_prompt': None}
 
 === PRE-ADAPTATION BASELINE OUTPUTS (bfloat16, NO SYSTEM PROMPT) ===
 
@@ -8012,7 +8062,7 @@ Troubleshooting AWS EC2 instance connectivity and SSH access issues involves sev
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=cell-06">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=m-06">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8022,7 +8072,7 @@ Troubleshooting AWS EC2 instance connectivity and SSH access issues involves sev
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=cell-07">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=c-07">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8039,6 +8089,7 @@ Troubleshooting AWS EC2 instance connectivity and SSH access issues involves sev
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Fixed Random Seed:         </span><span class="si">{</span><span class="n">ds_stats</span><span class="p">[</span><span class="s1">'random_seed'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Avg Words / Example:       </span><span class="si">{</span><span class="n">ds_stats</span><span class="p">[</span><span class="s1">'avg_words_per_example'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Est. Avg Tokens / Example: </span><span class="si">{</span><span class="n">ds_stats</span><span class="p">[</span><span class="s1">'estimated_avg_tokens_per_example'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Method:                    </span><span class="si">{</span><span class="n">ds_stats</span><span class="p">[</span><span class="s1">'generation_method'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Pairs per Cleaned Domain Manual:"</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">src</span><span class="p">,</span> <span class="n">cnt</span> <span class="ow">in</span> <span class="n">ds_stats</span><span class="p">[</span><span class="s2">"per_source_counts"</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  - </span><span class="si">{</span><span class="n">src</span><span class="si">:</span><span class="s2">35s</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">cnt</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
@@ -8067,6 +8118,7 @@ Eval Split  (20%):         116 (19.97%)
 Fixed Random Seed:         42
 Avg Words / Example:       107.3
 Est. Avg Tokens / Example: 142.7
+Method:                    Section-anchored, sentence-boundary grounded extraction directly from the 6 cleaned domain corpus manuals (ligature normalization, hyphen rejoining, TOC/header stripping, strict sentence-start/end validation, and SHA-256 deduplication; zero external facts).
 
 Pairs per Cleaned Domain Manual:
   - aws_ec2_userguide_clean.txt        : 100
@@ -8105,18 +8157,18 @@ Response:    By default vsftpd is not configured to allow anonymous download. If
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=cell-08">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=m-08">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p><strong>Part B1 Justification:</strong> All 581 instruction–response pairs were extracted exclusively from the 6 cleaned <code>.txt</code> manuals in <code>data/domain_corpus/</code> using section-anchored, sentence-boundary extraction with ligature normalization, hyphen rejoining, TOC stripping, and SHA-256 deduplication—introducing zero external facts. Balancing ~100 pairs per manual (~143 tokens/example) fits comfortably within a 384-token SFT window while providing diverse coverage across Ubuntu Server, RHEL 9, AWS EC2, PostgreSQL 17, Bash, and GCC.</p>
+<p><strong>Part B1 Justification:</strong> All <strong>581</strong> instruction–response pairs were extracted exclusively from the 6 cleaned <code>.txt</code> manuals in <code>data/domain_corpus/</code> using section-anchored, sentence-boundary extraction with ligature normalization, hyphen rejoining, TOC stripping, and SHA-256 deduplication—introducing zero external facts. Balancing up to 100 pairs per manual (~142.7 estimated tokens/example) fits cleanly within <code>max_length=384</code> for SFT without truncation while covering Ubuntu Server, RHEL 9, AWS EC2, PostgreSQL 17, Bash, and GCC. Deterministic <code>seed=42</code> produces <strong>465</strong> training (<code>train.jsonl</code>) and <strong>116</strong> evaluation (<code>eval.jsonl</code>) records with zero overlap.</p>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=cell-09">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=m-09">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8126,7 +8178,7 @@ Response:    By default vsftpd is not configured to allow anonymous download. If
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=cell-10">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=c-10">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8140,10 +8192,11 @@ Response:    By default vsftpd is not configured to allow anonymous download. If
 <span class="nb">print</span><span class="p">(</span><span class="s2">"=== PART B2: ADAPTER B TRAINING HYPERPARAMETERS &amp; CONVERGENCE ==="</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">[</span>
     <span class="s2">"model_name"</span><span class="p">,</span> <span class="s2">"adapter_config"</span><span class="p">,</span> <span class="s2">"lora_r"</span><span class="p">,</span> <span class="s2">"lora_alpha"</span><span class="p">,</span> <span class="s2">"target_modules"</span><span class="p">,</span>
-    <span class="s2">"trainable_params"</span><span class="p">,</span> <span class="s2">"total_params"</span><span class="p">,</span> <span class="s2">"trainable_pct"</span><span class="p">,</span> <span class="s2">"precision"</span><span class="p">,</span> <span class="s2">"device"</span><span class="p">,</span>
-    <span class="s2">"train_examples"</span><span class="p">,</span> <span class="s2">"eval_examples"</span><span class="p">,</span> <span class="s2">"num_train_epochs"</span><span class="p">,</span> <span class="s2">"total_steps"</span><span class="p">,</span>
-    <span class="s2">"max_length"</span><span class="p">,</span> <span class="s2">"effective_batch_size"</span><span class="p">,</span> <span class="s2">"learning_rate"</span><span class="p">,</span>
-    <span class="s2">"initial_eval_loss"</span><span class="p">,</span> <span class="s2">"final_eval_loss"</span><span class="p">,</span> <span class="s2">"final_train_loss"</span><span class="p">,</span> <span class="s2">"train_runtime_sec"</span>
+    <span class="s2">"trainable_params"</span><span class="p">,</span> <span class="s2">"total_params"</span><span class="p">,</span> <span class="s2">"trainable_pct"</span><span class="p">,</span> <span class="s2">"use_4bit_qlora"</span><span class="p">,</span>
+    <span class="s2">"precision"</span><span class="p">,</span> <span class="s2">"device"</span><span class="p">,</span> <span class="s2">"train_examples"</span><span class="p">,</span> <span class="s2">"eval_examples"</span><span class="p">,</span>
+    <span class="s2">"num_train_epochs"</span><span class="p">,</span> <span class="s2">"total_steps"</span><span class="p">,</span> <span class="s2">"max_length"</span><span class="p">,</span> <span class="s2">"effective_batch_size"</span><span class="p">,</span>
+    <span class="s2">"learning_rate"</span><span class="p">,</span> <span class="s2">"initial_eval_loss"</span><span class="p">,</span> <span class="s2">"final_eval_loss"</span><span class="p">,</span> <span class="s2">"final_train_loss"</span><span class="p">,</span>
+    <span class="s2">"train_runtime_sec"</span>
 <span class="p">]:</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">k</span><span class="si">:</span><span class="s2">24s</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">train_meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
@@ -8183,6 +8236,7 @@ Response:    By default vsftpd is not configured to allow anonymous download. If
   trainable_params        : 2179072
   total_params            : 1545893376
   trainable_pct           : 0.141
+  use_4bit_qlora          : False
   precision               : bfloat16 LoRA on MPS (4-bit NF4 requires CUDA)
   device                  : mps
   train_examples          : 465
@@ -8227,7 +8281,20 @@ Loss Progression:
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=cell-11">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=m-11">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<blockquote>
+<p><strong>Hardware Status Note (Part B2):</strong> Because Apple M4 MPS does not support CUDA <code>bitsandbytes</code> 4-bit NF4 kernels, the run above executed native <code>bfloat16</code> LoRA (<code>use_4bit_qlora: false</code>) reducing eval loss from <code>3.1321</code> → <code>1.9787</code> (<code>-36.8%</code>). Genuine 4-bit NF4 QLoRA execution on CUDA (<code>BitsAndBytesConfig</code> + <code>prepare_model_for_kbit_training</code> + <code>paged_adamw_8bit</code>) is implemented in <code>src/training/qlora_trainer.py</code> and packaged in <code>notebooks/assignment_1B_colab_t4.ipynb</code> for Google Colab T4 execution.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=m-12">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8237,7 +8304,7 @@ Loss Progression:
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=cell-12">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=c-13">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8260,6 +8327,9 @@ Loss Progression:
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-OutputArea-output" data-mime-type="text/markdown" tabindex="0">
 <h1 id="Part-B3-%E2%80%94-Comparative-Analysis:-Baseline-vs-Fine-Tuned-LoRA-Adapter">Part B3 — Comparative Analysis: Baseline vs Fine-Tuned LoRA Adapter<a class="anchor-link" href="#Part-B3-%E2%80%94-Comparative-Analysis:-Baseline-vs-Fine-Tuned-LoRA-Adapter">¶</a></h1><p>All findings below are computed directly from the generated baseline and adapter outputs.</p>
+<blockquote>
+<p><strong>Methodology Note:</strong> Per Part A2 requirements, the pre-adaptation baseline was evaluated on raw prompts with <strong>no system prompt</strong>. Per Part B2/B3 SFT alignment, the fine-tuned adapter was evaluated using Qwen2.5's chat template (<code>apply_chat_template</code>, which inserts Qwen's default assistant framing). Observed stylistic differences reflect both domain fine-tuning and chat-template framing.</p>
+</blockquote>
 <h2 id="PROMPT_1:-NTFS-Mount-Troubleshooting-on-Ubuntu-Server">PROMPT_1: NTFS Mount Troubleshooting on Ubuntu Server<a class="anchor-link" href="#PROMPT_1:-NTFS-Mount-Troubleshooting-on-Ubuntu-Server">¶</a></h2><p><strong>Prompt:</strong> <em>"How do I troubleshoot an Ubuntu server that cannot mount an NTFS drive?"</em></p>
 <table>
 <thead>
@@ -8460,7 +8530,7 @@ Across the 150-token response window, the baseline referenced 5 domain terms (aw
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=cell-13">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=m-14">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8470,7 +8540,7 @@ Across the 150-token response window, the baseline referenced 5 domain terms (aw
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=cell-14">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=c-15">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8493,7 +8563,15 @@ Across the 150-token response window, the baseline referenced 5 domain terms (aw
         <span class="n">vals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">entry</span><span class="p">[</span><span class="s1">'tok_per_sec'</span><span class="p">]</span><span class="si">}</span><span class="s2"> tok/s (</span><span class="si">{</span><span class="n">entry</span><span class="p">[</span><span class="s1">'time_sec'</span><span class="p">]</span><span class="si">}</span><span class="s2">s)"</span><span class="p">)</span>
     <span class="n">md_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"| "</span> <span class="o">+</span> <span class="s2">" | "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">vals</span><span class="p">)</span> <span class="o">+</span> <span class="s2">" |"</span><span class="p">)</span>
 
+<span class="n">sa</span> <span class="o">=</span> <span class="n">dec</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"summary_averages"</span><span class="p">,</span> <span class="p">{})</span>
+<span class="k">if</span> <span class="n">sa</span><span class="p">:</span>
+    <span class="n">mean_vals</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"**3-Prompt Mean**"</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span>
+        <span class="sa">f</span><span class="s2">"**</span><span class="si">{</span><span class="n">sa</span><span class="p">[</span><span class="n">s</span><span class="p">][</span><span class="s1">'avg_tok_per_sec'</span><span class="p">]</span><span class="si">}</span><span class="s2"> tok/s** (</span><span class="si">{</span><span class="n">sa</span><span class="p">[</span><span class="n">s</span><span class="p">][</span><span class="s1">'avg_time_sec'</span><span class="p">]</span><span class="si">}</span><span class="s2">s)"</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">strats</span>
+    <span class="p">]</span>
+    <span class="n">md_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"| "</span> <span class="o">+</span> <span class="s2">" | "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">mean_vals</span><span class="p">)</span> <span class="o">+</span> <span class="s2">" |"</span><span class="p">)</span>
+
 <span class="n">display</span><span class="p">(</span><span class="n">Markdown</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">md_lines</span><span class="p">)))</span>
+<span class="n">display</span><span class="p">(</span><span class="n">Markdown</span><span class="p">(</span><span class="sa">f</span><span class="s2">"### Production Decoding Recommendation (100-Word Analysis)</span><span class="se">\n</span><span class="s2">&gt; </span><span class="si">{</span><span class="n">dec</span><span class="p">[</span><span class="s1">'deployment_analysis'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">))</span>
 <span class="n">display</span><span class="p">(</span><span class="n">Image</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">ROOT</span> <span class="o">/</span> <span class="s2">"results/charts/decoding_comparison.png"</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">820</span><span class="p">))</span>
 </pre></div>
 </div>
@@ -8551,8 +8629,26 @@ Across the 150-token response window, the baseline referenced 5 domain terms (aw
 <td style="text-align:center">21.9 tok/s (6.851s)</td>
 <td style="text-align:center">22.18 tok/s (6.764s)</td>
 </tr>
+<tr>
+<td style="text-align:left"><strong>3-Prompt Mean</strong></td>
+<td style="text-align:center"><strong>19.86 tok/s</strong> (8.01s)</td>
+<td style="text-align:center"><strong>10.89 tok/s</strong> (13.84s)</td>
+<td style="text-align:center"><strong>15.24 tok/s</strong> (10.02s)</td>
+<td style="text-align:center"><strong>18.27 tok/s</strong> (8.34s)</td>
+<td style="text-align:center"><strong>18.21 tok/s</strong> (8.31s)</td>
+<td style="text-align:center"><strong>18.87 tok/s</strong> (8.05s)</td>
+<td style="text-align:center"><strong>17.09 tok/s</strong> (9.33s)</td>
+</tr>
 </tbody>
 </table>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-OutputArea-output" data-mime-type="text/markdown" tabindex="0">
+<h3 id="Production-Decoding-Recommendation-(100-Word-Analysis)">Production Decoding Recommendation (100-Word Analysis)<a class="anchor-link" href="#Production-Decoding-Recommendation-(100-Word-Analysis)">¶</a></h3><blockquote>
+<p>For an enterprise IT Helpdesk &amp; Incident Resolution Assistant (V5), Greedy Decoding (or low Temperature T=0.2) is the optimal production choice. Across all three prompts, Greedy Decoding achieved the highest mean throughput (19.86 tok/s, 8.01s avg latency) and deterministic commands (<code>lsblk -f</code>, <code>fdisk -l</code>, <code>iostat -x 1</code>, <code>aws ec2 describe-instances</code>). By contrast, Beam Search (k=4) slowed generation to 10.89 tok/s (13.84s, ~1.73x latency) with no gain in actionable CLI depth. High-entropy sampling introduced factual errors, such as Top-K suggesting <code>vfat</code> in <code>/etc/fstab</code> for an NTFS volume and T=1.0 (17.09 tok/s) hallucinating <code>blkid</code> kernel checks and forum-style prose.</p>
+</blockquote>
 </div>
 </div>
 <div class="jp-OutputArea-child">
@@ -8564,18 +8660,7 @@ Across the 150-token response window, the baseline referenced 5 domain terms (aw
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=cell-15">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Production-Decoding-Recommendation-(~100-Word-Analysis)">Production Decoding Recommendation (~100-Word Analysis)<a class="anchor-link" href="#Production-Decoding-Recommendation-(~100-Word-Analysis)">¶</a></h3><p>For an enterprise <strong>IT Helpdesk &amp; Incident Resolution Assistant</strong>, <strong>Greedy Decoding</strong> (with <strong>Temperature = 0.2</strong> as a low-variance fallback) is the optimal production choice. In our benchmark across all three canonical prompts, Greedy Decoding delivered the highest average throughput (<strong>27.10 tok/s</strong>, 5.54s latency)—<strong>2.67× faster</strong> than Beam Search (<strong>10.13 tok/s</strong>, 14.80s)—while ensuring 100% deterministic CLI commands and diagnostic workflows. High-temperature sampling (<code>T=1.0</code>, 12.10 tok/s) introduces unnecessary variance and hallucination risk in system-administration flags, whereas Greedy Decoding guarantees repeatable, audit-ready incident runbooks at the lowest compute cost.</p>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=cell-16">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=m-16">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8585,7 +8670,7 @@ Across the 150-token response window, the baseline referenced 5 domain terms (aw
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=cell-17">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=c-17">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8609,10 +8694,11 @@ Across the 150-token response window, the baseline referenced 5 domain terms (aw
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-OutputArea-output" data-mime-type="text/markdown" tabindex="0">
 <h1 id="Part-C-Step-2:-Speculative-Decoding-Benchmark">Part C Step 2: Speculative Decoding Benchmark<a class="anchor-link" href="#Part-C-Step-2:-Speculative-Decoding-Benchmark">¶</a></h1><ul>
-<li><strong>Target Model</strong>: <code>Qwen/Qwen2.5-1.5B-Instruct</code> (~1.54B params)</li>
-<li><strong>Draft Model</strong>: <code>Qwen/Qwen2.5-0.5B-Instruct</code> (~0.49B params)</li>
+<li><strong>Target Model</strong>: <code>Qwen/Qwen2.5-1.5B-Instruct</code> (1.54B params)</li>
+<li><strong>Draft Model</strong>: <code>Qwen/Qwen2.5-0.5B-Instruct</code> (0.49B params)</li>
 <li><strong>Device / Precision</strong>: <code>mps</code> (<code>torch.bfloat16</code>)</li>
-<li><strong>Average Throughput Change</strong>: <strong>-7.0%</strong> (25.27 → 23.35 tok/s)</li>
+<li><strong>Average Throughput Change</strong>: <strong>-7.0%</strong> (25.27 -&gt; 23.35 tok/s)</li>
+<li><strong>Draft Acceptance Rate</strong>: Unmeasured (not directly exposed by <code>transformers.generate(assistant_model=...)</code>)</li>
 </ul>
 <h2 id="Performance-Comparison-Table">Performance Comparison Table<a class="anchor-link" href="#Performance-Comparison-Table">¶</a></h2><table>
 <thead>
@@ -8634,7 +8720,7 @@ Across the 150-token response window, the baseline referenced 5 domain terms (aw
 <td style="text-align:center">27.01</td>
 <td style="text-align:center">20.36</td>
 <td style="text-align:center"><strong>-24.6%</strong></td>
-<td style="text-align:center">Minor fp drift (82/150 tok)</td>
+<td style="text-align:center">Diverged (82/150 tok)</td>
 </tr>
 <tr>
 <td style="text-align:left"><strong>prompt_2</strong> (linux_performance)</td>
@@ -8643,7 +8729,7 @@ Across the 150-token response window, the baseline referenced 5 domain terms (aw
 <td style="text-align:center">24.23</td>
 <td style="text-align:center">23.71</td>
 <td style="text-align:center"><strong>-2.1%</strong></td>
-<td style="text-align:center">Minor fp drift (65/150 tok)</td>
+<td style="text-align:center">Diverged (65/150 tok)</td>
 </tr>
 <tr>
 <td style="text-align:left"><strong>prompt_3</strong> (cloud_networking)</td>
@@ -8652,11 +8738,11 @@ Across the 150-token response window, the baseline referenced 5 domain terms (aw
 <td style="text-align:center">24.57</td>
 <td style="text-align:center">25.99</td>
 <td style="text-align:center"><strong>+5.8%</strong></td>
-<td style="text-align:center">Minor fp drift (15/150 tok)</td>
+<td style="text-align:center">Diverged (15/150 tok)</td>
 </tr>
 </tbody>
 </table>
-<h2 id="Observations-&amp;-Inferences">Observations &amp; Inferences<a class="anchor-link" href="#Observations-&amp;-Inferences">¶</a></h2><p>On <code>mps</code> (<code>torch.bfloat16</code>), speculative decoding measured <strong>-7.0%</strong> throughput change (25.27 → 23.35 tok/s). For a compact 1.5B target model with only a 3× parameter ratio against the 0.5B draft model, Python-level Hugging Face assisted-generation orchestration and per-step kernel launch overhead on <code>mps</code> outweigh the memory-bandwidth savings of batched target verification. Speculative decoding yields its largest speedups when the target-to-draft ratio is ≥7–10× (e.g., 7B/14B target with 0.5B draft) or on CUDA with fused verification kernels. Output verification showed 0/3 exact full-sequence matches with an average identical prefix of 54.0 tokens; minor downstream token divergences arise from reduced-precision (<code>torch.bfloat16</code>) floating-point non-associativity between single-token decoding and multi-token batched verification passes, while technical correctness and troubleshooting quality remained equivalent.</p>
+<h2 id="Observations-&amp;-Inferences">Observations &amp; Inferences<a class="anchor-link" href="#Observations-&amp;-Inferences">¶</a></h2><p>On <code>mps</code> (<code>torch.bfloat16</code>), speculative decoding measured <strong>-7.0%</strong> throughput change (25.27 -&gt; 23.35 tok/s). For a compact 1.5B target model with only a 3x parameter ratio against the 0.5B draft model, Python-level Hugging Face assisted-generation orchestration and per-step Metal kernel launch overhead on <code>mps</code> outweigh batched target verification savings. Output comparison showed 0/3 exact full-sequence matches with an average identical prefix of 54.0 tokens; downstream divergences reflect <code>torch.bfloat16</code> floating-point non-associativity between single-token decoding and batched verification passes (alongside default logits-processor interaction), while both runs produced relevant troubleshooting steps upon inspection. Per-step draft acceptance rate is not exposed directly by <code>transformers.generate()</code> and is unmeasured.</p>
 </div>
 </div>
 <div class="jp-OutputArea-child">
@@ -8668,7 +8754,7 @@ Across the 150-token response window, the baseline referenced 5 domain terms (aw
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=cell-18">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=m-18">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8678,7 +8764,7 @@ Across the 150-token response window, the baseline referenced 5 domain terms (aw
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=cell-19">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=c-19">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8757,19 +8843,18 @@ Across the 150-token response window, the baseline referenced 5 domain terms (aw
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=cell-20">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=m-20">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <hr/>
-<h1 id="Conclusion-&amp;-Deliverables-Verification">Conclusion &amp; Deliverables Verification<a class="anchor-link" href="#Conclusion-&amp;-Deliverables-Verification">¶</a></h1><ul>
-<li><strong>Master Notebook &amp; HTML Export:</strong> Every code cell above executed live with visible tables, metrics, and embedded high-resolution Matplotlib charts (<code>submission/assignment_1B.html</code>).</li>
-<li><strong>Domain Corpus:</strong> 6 cleaned <code>.txt</code> manuals in <code>data/domain_corpus/</code>.</li>
-<li><strong>Instruction Dataset:</strong> 581 strictly corpus-grounded, deduplicated pairs in <code>data/instruction_dataset.jsonl</code> (465 train / 116 eval).</li>
-<li><strong>Trained Adapter:</strong> Saved PEFT Adapter B weights and tokenizer in <code>models/lora_adapter/</code>.</li>
-<li><strong>CUDA Colab Notebook:</strong> Portable 1-click Google Colab T4 notebook provided in <code>notebooks/assignment_1B_colab_t4.ipynb</code> for empirical CUDA 4-bit <code>bitsandbytes</code> execution.</li>
+<h1 id="Deliverables-Checklist-&amp;-Execution-Summary">Deliverables Checklist &amp; Execution Summary<a class="anchor-link" href="#Deliverables-Checklist-&amp;-Execution-Summary">¶</a></h1><ul>
+<li><strong>Notebook &amp; Exported HTML:</strong> Consolidated master notebook executed end-to-end with embedded charts (<code>notebooks/assignment_1B_master.ipynb</code> → <code>submission/assignment_1B.html</code>).</li>
+<li><strong>Cleaned Corpus:</strong> 6 domain <code>.txt</code> files under <code>data/domain_corpus/</code>.</li>
+<li><strong>Instruction Dataset:</strong> 581 strictly corpus-grounded pairs in <code>data/instruction_dataset.jsonl</code> (<code>465</code> train / <code>116</code> eval).</li>
+<li><strong>Google Colab T4 CUDA Companion Notebook:</strong> <code>notebooks/assignment_1B_colab_t4.ipynb</code> (executes true CUDA 4-bit NF4 QLoRA, CUDA speculative decoding, and empirical 4-bit NF4 + Speculative Part C3 benchmarks).</li>
 </ul>
 </div>
 </div>

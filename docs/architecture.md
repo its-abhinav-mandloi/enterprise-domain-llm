@@ -13,7 +13,7 @@ flowchart TD
     end
 
     subgraph PartB["Part B: QLoRA Fine-Tuning [5 Marks]"]
-        A4 --> B1["Instruction Dataset Generator<br>(720 Pairs, 80/20 Train/Eval Split)"]
+        A4 --> B1["Instruction Dataset Generator<br>(581 Pairs, 80/20 Train/Eval Split)"]
         B1 --> B2["PEFT LoRA Adapter B<br>(r=16, alpha=32, target: q_proj, v_proj)"]
         B2 --> B3["SFT Training (bfloat16 MPS / 4-bit CUDA)"]
         B3 --> B4["Saved Adapter<br>(models/lora_adapter/)"]
